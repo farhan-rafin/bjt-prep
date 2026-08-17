@@ -20,11 +20,13 @@ export function QuizShell({
   items,
   quizType,
   onFinish,
+  onAnswer,
   week,
 }: {
   items: QuizItem[];
   quizType: string;
   onFinish?: (correct: number, total: number) => void;
+  onAnswer?: (item: QuizItem, isCorrect: boolean) => void;
   week?: number;
 }) {
   const [index, setIndex] = React.useState(0);
@@ -42,6 +44,7 @@ export function QuizShell({
     setSubmitted(true);
     const isCorrect = selected === item.correctIndex;
     if (isCorrect) setCorrectCount((c) => c + 1);
+    onAnswer?.(item, isCorrect);
     await insertAttempt({
       quiz_type: quizType,
       quiz_id: item.id,
