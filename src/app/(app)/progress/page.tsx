@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth-context";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
+import { Achievements } from "@/components/achievements";
 import {
   skillProgressEstimate, latestMock, findCurrentPosition, courseProgressPct,
 } from "@/lib/progress";
@@ -119,6 +120,10 @@ export default function ProgressPage() {
           ))}
         </CardContent>
       </Card>
+
+      <div className="mt-6">
+        <Achievements />
+      </div>
     </div>
   );
 }
