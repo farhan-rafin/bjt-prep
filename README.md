@@ -2,7 +2,9 @@
 
 A personal, interactive Business Japanese learning platform built from the *BJT J2 — 6-Month Business Japanese Training Program*. Target: **BJT J2, 420+**.
 
-Not a static copy of the source document — the curriculum (24-week roadmap, the 16 fully-detailed Week 1–4 sessions, minute-by-minute Day 1, grammar/vocab/kanji/keigo content, BJT question-type strategy, resources, Japan missions, weekly tests, monthly checkpoints, final-8-weeks and final-30-day plans, and the master checklist) is parsed into structured TypeScript data in `src/content/` and rendered as a Duolingo/Notion/Anki-style interactive app with a Supabase backend for cross-device progress.
+Not a static copy of the source document — the curriculum (24-week roadmap, the 16 fully-detailed Week 1–4 sessions, minute-by-minute Day 1, grammar/vocab/kanji/keigo content, BJT question-type strategy, resources, Japan missions, weekly tests, monthly checkpoints, final-8-weeks and final-30-day plans, and the master checklist) is parsed into structured TypeScript data in `src/content/` and rendered as a Duolingo/Notion/Anki-style interactive app with a Supabase backend for progress.
+
+**No accounts.** This is a single-user personal app — there's no login/signup screen. On first load, the app silently opens an anonymous Supabase session (`supabase.auth.signInAnonymously()`) scoped by Row Level Security, and every page goes straight to the Dashboard. Progress persists across reloads on the same browser via the persisted Supabase session. See "Anonymous sign-in setup" below — it needs one toggle enabled in the Supabase dashboard.
 
 ## Tech stack
 
@@ -28,7 +30,7 @@ src/
       dashboard/ today/ journey/ vocabulary/ kanji/ grammar/ keigo/
       listening/ reading/ bjt/ flashcards/ tests/ mock-tests/ mistakes/
       missions/ resources/ notes/ progress/ countdown/ checklist/ settings/
-    login/ signup/ forgot-password/ onboarding/ auth/callback/
+    onboarding/
   components/             UI primitives + feature components
   content/                Curriculum data (source of truth), typed
   lib/                    Supabase clients, hooks, progress/session helpers, SRS, quiz generators
@@ -47,6 +49,16 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 These are the **publishable** URL and anon key — safe to expose client-side. Never put the `service_role` key in this app.
 
+## Anonymous sign-in setup (required, one-time)
+
+Supabase ships with Anonymous Sign-ins **disabled** by default. This app depends on it (see above), so before first use:
+
+1. Supabase dashboard → your project → **Authentication → Sign In / Providers**.
+2. Enable **Allow anonymous sign-ins**.
+3. Reload the app. If it still shows "Couldn't start your session," it'll tell you what's wrong and offer a **Retry** button — no need to redeploy.
+
+There's intentionally no sign-out button in the app: signing out of an anonymous session would abandon that browser's data (a fresh reload creates a brand-new anonymous user with nothing in it). Use Settings → **Data Export** to back up before clearing browser storage or switching devices/browsers, since anonymous sessions don't sync across them.
+
 ## Local development
 
 ```bash
@@ -54,7 +66,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:3000. A guest can preview the Dashboard, Today, and the 24-Week Journey (Week 1) without signing up; everything else requires an account so progress can sync across devices.
+Open http://localhost:3000 — it redirects straight to the Dashboard.
 
 ## Database setup (already applied to the linked Supabase project)
 
@@ -63,17 +75,14 @@ The schema in `supabase/migrations/00001_initial_schema.sql` and `00002_lock_dow
 1. Create a new Supabase project.
 2. Run the two migration files in `supabase/migrations/` against it, in order, via the SQL editor or `supabase db push`.
 3. Update `.env.local` (and your Vercel project's environment variables) with the new project's URL/anon key.
-4. In Supabase Auth settings, add your deployed URL to **Site URL** and **Redirect URLs** (needed for email confirmation and OAuth to redirect back correctly), e.g. `https://your-app.vercel.app/auth/callback`.
+4. Enable **Anonymous Sign-ins** in the new project's Auth settings (see below).
 
 ## Deployment (Vercel)
 
-This repo is linked to a Vercel project (`bjt-quest`). To finish wiring it up:
+This repo is linked to a Vercel project (`bjt-quest`), production branch `main`. To finish wiring it up:
 
 1. In the Vercel project → **Settings → Environment Variables**, add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (same values as `.env.local`) for Production, Preview, and Development.
-2. In Supabase → **Authentication → URL Configuration**, set the Site URL to your production domain and add `https://<your-domain>/auth/callback` to Redirect URLs.
-3. Push to the branch Vercel is tracking (or promote a deployment to Production from the dashboard).
-
-Google OAuth is wired in the login page (`signInWithOAuth`) but requires enabling the Google provider in Supabase Auth settings with your own OAuth client credentials — optional, email/password works out of the box.
+2. Push to `main` (or promote a deployment to Production from the dashboard).
 
 ## What's deliberately simplified for v1
 

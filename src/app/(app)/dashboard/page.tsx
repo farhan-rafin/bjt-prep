@@ -29,8 +29,8 @@ const skillMeta = [
 ] as const;
 
 export default function DashboardPage() {
-  const { user, profile } = useAuth();
-  const { rows: sessions, loading: loadingSessions } = useUserTable("session_progress");
+  const { profile } = useAuth();
+  const { rows: sessions } = useUserTable("session_progress");
   const { rows: vocabStatus } = useUserTable("vocab_status");
   const { rows: kanjiStatus } = useUserTable("kanji_status");
   const { rows: weeklyTests } = useUserTable("weekly_tests");
@@ -190,13 +190,6 @@ export default function DashboardPage() {
           <BjtScoreTracker mocks={mockTests} target={targetScore} />
         </CardContent>
       </Card>
-
-      {!loadingSessions && !user && (
-        <p className="mt-6 text-center text-xs text-muted-foreground">
-          Browsing as guest — <Link href="/signup" className="text-primary hover:underline">sign up</Link> to save
-          your progress across devices.
-        </p>
-      )}
     </div>
   );
 }

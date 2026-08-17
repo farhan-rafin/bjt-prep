@@ -5,14 +5,9 @@ import { mainNav, settingsNav } from "@/lib/nav";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
-import { useAuth } from "@/lib/auth-context";
-import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
-  const router = useRouter();
 
   return (
     <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col border-r border-border bg-surface lg:flex">
@@ -52,20 +47,8 @@ export function Sidebar() {
           <settingsNav.icon className="size-4" />
           Settings
         </Link>
-        <div className="flex items-center justify-between px-1">
+        <div className="px-1">
           <ThemeToggle />
-          {user && (
-            <button
-              onClick={async () => {
-                await signOut();
-                router.push("/login");
-              }}
-              aria-label="Sign out"
-              className="flex size-8 items-center justify-center rounded-full text-muted-foreground hover:bg-surface-muted hover:text-foreground"
-            >
-              <LogOut className="size-4" />
-            </button>
-          )}
         </div>
       </div>
     </aside>

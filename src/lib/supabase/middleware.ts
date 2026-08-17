@@ -1,6 +1,8 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+// Single-user personal app: no login wall. This just keeps the Supabase session cookie
+// fresh on each request; actual (anonymous) sign-in happens client-side in AuthProvider.
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -23,23 +25,7 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const path = request.nextUrl.pathname;
-  const isAuthRoute = path.startsWith("/login") || path.startsWith("/signup") || path.startsWith("/forgot-password");
-  const isPublicRoute = path === "/" || isAuthRoute || path.startsWith("/auth");
-  const isGuest = request.cookies.get("bjt_guest_mode")?.value === "1";
-  const isGuestAllowedRoute =
-    isGuest &&
-    (path === "/dashboard" || path.startsWith("/journey/week/1") || path === "/journey" || path === "/today");
-
-  if (!user && !isPublicRoute && !isGuestAllowedRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
+  await supabase.auth.getUser();
 
   return supabaseResponse;
 }

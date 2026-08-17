@@ -1,6 +1,5 @@
 "use client";
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useAuth } from "@/lib/auth-context";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { durationOutcomes, type DurationOption } from "@/content";
-import { Download, LogOut } from "lucide-react";
+import { Download } from "lucide-react";
 import { toast } from "sonner";
 
 const DAYS = [
@@ -19,8 +18,7 @@ const DAYS = [
 ];
 
 export default function SettingsPage() {
-  const router = useRouter();
-  const { user, profile, updateProfile, signOut } = useAuth();
+  const { user, profile, updateProfile } = useAuth();
   const mistakesTable = useUserTable("mistakes");
   const mockTable = useUserTable("mock_tests");
   const vocabTable = useUserTable("vocab_status");
@@ -74,10 +72,6 @@ export default function SettingsPage() {
           <div>
             <label className="mb-1 block text-xs text-muted-foreground">Name</label>
             <Input defaultValue={profile.name ?? ""} onBlur={(e) => updateProfile({ name: e.target.value })} />
-          </div>
-          <div>
-            <label className="mb-1 block text-xs text-muted-foreground">Email</label>
-            <Input value={user.email ?? ""} disabled />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -175,16 +169,10 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Button
-        variant="destructive"
-        className="mt-6 w-full"
-        onClick={async () => {
-          await signOut();
-          router.push("/login");
-        }}
-      >
-        <LogOut className="size-4" /> Sign out
-      </Button>
+      <p className="mt-6 text-center text-xs text-muted-foreground">
+        This app runs single-user, tied to this browser — there&apos;s no account to sign out of. Clearing your
+        browser data will start a fresh session, so use the backup export above if you ever need to move devices.
+      </p>
     </div>
   );
 }
