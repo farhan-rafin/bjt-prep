@@ -43,7 +43,7 @@ export const mockProgram = {
     { milestone: "Mocks in final 8 weeks", when: "4 full mocks (weeks 20, 22, 23, 24) + timed sections between" },
   ],
   errorCategories: [
-    { type: "Vocabulary", action: "Add missed words to Anki business decks; drill the cluster." },
+    { type: "Vocabulary", action: "Add missed words to your Flashcards deck; drill the cluster." },
     { type: "Grammar", action: "Re-study the pattern; do 10 targeted sentences." },
     { type: "Listening", action: "Intensive-listen that clip; shadow it 5×." },
     { type: "Reading speed", action: "Redo timed with question-first method; cut translation habit." },
@@ -87,7 +87,7 @@ export const examStrategyReminders = [
 
 // Source: BJT J2 — 6-Month Master Checklist
 export const masterChecklist: ChecklistItem[] = [
-  { id: "c1", group: "Setup", label: "Anki installed with 5 decks running daily" },
+  { id: "c1", group: "Setup", label: "Flashcards deck reviewed daily (built into the app)" },
   { id: "c2", group: "Setup", label: "Official BJT Guide obtained; CBT demo completed" },
   { id: "c3", group: "Setup", label: "Study calendar: 4 fixed days/week locked around Lawson shifts" },
   { id: "c4", group: "Setup", label: "Notes doc created with the 4 templates" },

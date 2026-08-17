@@ -46,8 +46,8 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
         }))
       : buildSessionSteps(week, day, duration);
     if (!essential) return full;
-    // Essential Mode: Anki review + most important listening/BJT content, ~60 min total. Convenience shortcut, not curriculum.
-    const priorityLabels = ["Anki", "listening", "Intensive listening", "BJT", "Weekly test"];
+    // Essential Mode: flashcard review + most important listening/BJT content, ~60 min total. Convenience shortcut, not curriculum.
+    const priorityLabels = ["Flashcard", "listening", "Intensive listening", "BJT", "Weekly test"];
     const picked = full.filter((s) => priorityLabels.some((p) => s.label.toLowerCase().includes(p.toLowerCase())));
     return (picked.length > 0 ? picked : full.slice(0, 2)).slice(0, 3);
   }, [isDay1, week, day, duration, essential]);

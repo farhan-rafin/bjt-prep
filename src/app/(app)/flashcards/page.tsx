@@ -5,19 +5,63 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useUserTable } from "@/lib/hooks/use-user-table";
+import { useAuth } from "@/lib/auth-context";
+import { createClient } from "@/lib/supabase/client";
 import { nextSrsState, type Rating } from "@/lib/srs";
-import { Star, RotateCcw } from "lucide-react";
+import { buildAllFlashcards } from "@/lib/seed-flashcards";
+import { findCurrentPosition } from "@/lib/progress";
+import { Star, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function FlashcardsPage() {
-  const { rows: cards, update, loading } = useUserTable("flashcards");
+  const { user } = useAuth();
+  const supabase = React.useMemo(() => createClient(), []);
+  const { rows: cards, update, loading, refetch } = useUserTable("flashcards");
   const { insert: insertReview } = useUserTable("flashcard_reviews");
+  const { rows: sessions, loading: loadingSessions } = useUserTable("session_progress");
+
+  const [seeding, setSeeding] = React.useState(false);
+  const seededRef = React.useRef(false);
+  const totalDeckSize = React.useMemo(() => buildAllFlashcards(1).length, []);
+
+  const seedDeck = React.useCallback(async () => {
+    if (!user || seeding) return;
+    setSeeding(true);
+    const currentWeek = findCurrentPosition(sessions).week;
+    const rows = buildAllFlashcards(currentWeek).map((r) => ({ ...r, user_id: user.id }));
+    const chunkSize = 100;
+    for (let i = 0; i < rows.length; i += chunkSize) {
+      const chunk = rows.slice(i, i + chunkSize);
+      const { error } = await supabase
+        .from("flashcards")
+        .upsert(chunk, { onConflict: "user_id,source_type,source_id", ignoreDuplicates: true });
+      if (error) {
+        toast.error("Couldn't build your deck: " + error.message);
+        setSeeding(false);
+        return;
+      }
+    }
+    await refetch();
+    setSeeding(false);
+    toast.success(`Deck ready — ${rows.length} cards from your curriculum`);
+  }, [user, seeding, sessions, supabase, refetch]);
+
+  React.useEffect(() => {
+    if (loading || loadingSessions || !user || seededRef.current) return;
+    if (cards.length === 0) {
+      seededRef.current = true;
+      seedDeck();
+    } else {
+      seededRef.current = true;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, loadingSessions, user, cards.length]);
 
   const now = new Date();
   const due = cards.filter((c) => c.due_at && new Date(c.due_at) <= now);
   const stats = {
     due: due.length,
-    learned: cards.filter((c) => c.state === "mature").length,
     young: cards.filter((c) => c.state === "young").length,
     mature: cards.filter((c) => c.state === "mature").length,
     difficult: cards.filter((c) => c.state === "difficult").length,
@@ -48,8 +92,23 @@ export default function FlashcardsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 lg:py-10">
-      <h1 className="text-2xl font-semibold">Flashcards</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Anki-style spaced repetition across vocab, kanji, grammar, and keigo.</p>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h1 className="text-2xl font-semibold">Flashcards</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Spaced-repetition review built into the app — no Anki install needed. Your full deck ({totalDeckSize}{" "}
+            cards across vocab, kanji, grammar, and keigo) is paced to unlock as you move through the 24 weeks.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" onClick={seedDeck} disabled={seeding} className="shrink-0">
+          {seeding ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+          Sync deck
+        </Button>
+      </div>
+
+      {seeding && cards.length === 0 && (
+        <p className="mt-3 text-xs text-muted-foreground">Building your deck for the first time — one moment…</p>
+      )}
 
       <div className="mt-4 grid grid-cols-4 gap-2 text-center text-xs">
         <StatChip label="Due today" value={stats.due} />
@@ -69,7 +128,9 @@ export default function FlashcardsPage() {
               <CardContent className="flex flex-col items-center gap-2 p-10 text-center">
                 <p className="text-lg font-medium">{queue.length === 0 ? "Nothing due right now" : "All caught up 🎉"}</p>
                 <p className="text-sm text-muted-foreground">
-                  {queue.length === 0 ? "Add cards from Vocabulary, Kanji, Grammar, or Keigo." : "Come back when more cards are due."}
+                  {queue.length === 0
+                    ? "New cards unlock automatically as you progress through the weeks."
+                    : "Come back when more cards are due."}
                 </p>
                 <Button variant="outline" className="mt-2" onClick={() => { setQueue(due); setIdx(0); }}>
                   <RotateCcw className="size-4" /> Restart queue
@@ -121,9 +182,9 @@ export default function FlashcardsPage() {
                 </CardContent>
               </Card>
             ))}
-            {cards.length === 0 && (
+            {cards.length === 0 && !seeding && (
               <p className="py-10 text-center text-sm text-muted-foreground">
-                No flashcards yet — add some from Vocabulary, Kanji, Grammar, or Keigo pages.
+                No flashcards yet — click &quot;Sync deck&quot; above to build your deck from the curriculum.
               </p>
             )}
           </div>

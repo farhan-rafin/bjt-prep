@@ -75,7 +75,7 @@ export default function TodayPage() {
             </Button>
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
-            Essential Mode is a convenience shortcut, not part of the core curriculum — it prioritises Anki review,
+            Essential Mode is a convenience shortcut, not part of the core curriculum — it prioritises flashcard review,
             listening, and today&apos;s most important BJT task, and logs a partial session you can finish later.
           </p>
         </CardContent>

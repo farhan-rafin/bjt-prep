@@ -38,13 +38,6 @@ export const resources: Resource[] = [
     url: "https://www.3anet.co.jp/", badge: "EXTERNAL",
   },
   {
-    id: "r-anki", name: "Anki (SRS app)", type: "App", tier: "essential",
-    level: "All", when: "Daily, all 6 months.",
-    how: "Five decks: high-frequency, business vocab, business phrases, keigo, kanji compounds.",
-    cost: "Free (PC/Android) / paid iOS", where: "apps.ankiweb.net",
-    url: "https://apps.ankiweb.net/", badge: "EXTERNAL",
-  },
-  {
     id: "r-jisho", name: "Jisho.org (dictionary)", type: "Dictionary", tier: "essential",
     level: "All", when: "Daily.",
     how: "Look up unknowns from listening/reading; grab example sentences for cards.",
@@ -59,13 +52,6 @@ export const resources: Resource[] = [
     url: "https://jisho.org/", badge: "EXTERNAL",
   },
   {
-    id: "r-migaku", name: "Migaku browser extension", type: "App", tier: "optional",
-    level: "All", when: "Optional, months 3–6.",
-    how: "Mine words from business articles/videos into Anki. Only if you enjoy reading native business articles.",
-    cost: "Subscription", where: "migaku.com",
-    url: "https://migaku.com/", badge: "EXTERNAL",
-  },
-  {
     id: "r-nhk-easy", name: "NHK NEWS WEB EASY (やさしい日本語)", type: "Listening", tier: "recommended",
     level: "All", when: "Throughout, for reading-speed/scanning practice.",
     how: "Real news rewritten simply — great for scanning practice.",
@@ -75,7 +61,7 @@ export const resources: Resource[] = [
 ];
 
 export const nonNegotiableResources = [
-  "r-official-guide", "r-practice-test", "r-anki", "r-jisho",
+  "r-official-guide", "r-practice-test", "r-jisho",
 ];
 
 // Source: Part 12 & Part 18 — verified listening/YouTube resources

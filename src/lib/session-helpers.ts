@@ -27,7 +27,7 @@ export interface SessionStep {
 
 const fieldByBlockLabel: Record<DayNumber, Record<string, keyof NonNullable<ReturnType<typeof getSession>>>> = {
   1: {
-    "Warm-up review (Anki)": "anki",
+    "Warm-up review (Flashcards)": "anki",
     "Grammar (new patterns)": "grammar",
     "Vocabulary (new + drill)": "vocabulary",
     "Kanji recognition": "kanji",
@@ -35,21 +35,21 @@ const fieldByBlockLabel: Record<DayNumber, Record<string, keyof NonNullable<Retu
     "Log + tomorrow prep": "homework",
   },
   2: {
-    "Anki listening cards": "anki",
+    "Flashcard review — listening": "anki",
     "Intensive listening": "listening",
     "Business-situation dialogue study": "businessPhrases",
     "Shadowing": "shadowing",
     "Real-life mission review": "realLifeMission",
   },
   3: {
-    "Anki keigo/vocab": "anki",
+    "Flashcard review — keigo/vocab": "anki",
     "Reading speed drill": "reading",
     "Keigo situation study": "keigo",
     "Workplace communication module": "businessPhrases",
     "Short listening (must-do)": "listening",
   },
   4: {
-    "Anki full review": "anki",
+    "Flashcard review — full deck": "anki",
     "BJT question sets (by type)": "bjtPractice",
     "Weekly test (all skills)": "endOfSessionTest",
     "Error analysis + mistake log": "homework",
@@ -58,10 +58,10 @@ const fieldByBlockLabel: Record<DayNumber, Record<string, keyof NonNullable<Retu
 };
 
 const genericChecklist: Record<DayNumber, string[]> = {
-  1: ["Review Anki", "Learn today's grammar pattern", "Learn new vocabulary", "Study kanji", "Watch listening clip", "Complete mini-test"],
-  2: ["Review Anki listening cards", "Complete intensive listening", "Study business-situation dialogue", "Shadow the dialogue", "Log real-life mission"],
-  3: ["Review Anki keigo/vocab", "Complete reading speed drill", "Study keigo situation", "Complete workplace communication module", "Complete must-do listening"],
-  4: ["Clear Anki reviews", "Complete BJT question set", "Take weekly test", "Log mistakes", "Plan next week"],
+  1: ["Review flashcards", "Learn today's grammar pattern", "Learn new vocabulary", "Study kanji", "Watch listening clip", "Complete mini-test"],
+  2: ["Review listening flashcards", "Complete intensive listening", "Study business-situation dialogue", "Shadow the dialogue", "Log real-life mission"],
+  3: ["Review keigo/vocab flashcards", "Complete reading speed drill", "Study keigo situation", "Complete workplace communication module", "Complete must-do listening"],
+  4: ["Clear flashcard reviews", "Complete BJT question set", "Take weekly test", "Log mistakes", "Plan next week"],
 };
 
 export function buildSessionSteps(week: number, day: DayNumber, duration: DurationOption): SessionStep[] {
@@ -84,22 +84,22 @@ function fallbackDescription(week: number, day: DayNumber, blockLabel: string) {
   const w = roadmap.find((x) => x.week === week);
   if (!w) return blockLabel;
   const map: Record<string, string> = {
-    "Warm-up review (Anki)": "Clear due Anki reviews before adding anything new.",
+    "Warm-up review (Flashcards)": "Clear due flashcard reviews before adding anything new.",
     "Grammar (new patterns)": w.foundation,
     "Vocabulary (new + drill)": w.vocab,
     "Kanji recognition": w.kanji,
     "Short listening (must-do)": w.listening,
     "Log + tomorrow prep": "Log today's session and note tomorrow's starting point.",
-    "Anki listening cards": "Review due listening/keigo cards.",
+    "Flashcard review — listening": "Review due listening/keigo cards.",
     "Intensive listening": w.listening,
     "Business-situation dialogue study": w.businessJp,
     "Shadowing": "Shadow the hardest clip from today's listening block.",
     "Real-life mission review": "Check this week's Japan Mission and log your notes.",
-    "Anki keigo/vocab": "Review due keigo/vocab cards.",
+    "Flashcard review — keigo/vocab": "Review due keigo/vocab cards.",
     "Reading speed drill": w.reading,
     "Keigo situation study": w.keigo,
     "Workplace communication module": w.businessJp,
-    "Anki full review": "Clear all due reviews across every deck.",
+    "Flashcard review — full deck": "Clear all due reviews across every deck.",
     "BJT question sets (by type)": w.bjtPractice,
     "Weekly test (all skills)": w.weeklyTest,
     "Error analysis + mistake log": "Log every wrong answer and tally error categories.",

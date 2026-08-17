@@ -15,7 +15,7 @@ const steps = [
   { id: "keyinfo", title: "Write key information", type: "keyinfo" },
   { id: "listen2", title: "Listen again", type: "confirm" },
   { id: "transcript", title: "Check transcript", type: "confirm" },
-  { id: "unknown", title: "Save unknown words", type: "text", placeholder: "Words to add to Anki…" },
+  { id: "unknown", title: "Save unknown words", type: "text", placeholder: "Words to add to your Flashcards deck…" },
   { id: "shadow", title: "Shadow", type: "confirm" },
   { id: "questions", title: "Answer questions", type: "confirm" },
   { id: "rate", title: "Rate difficulty", type: "rate" },

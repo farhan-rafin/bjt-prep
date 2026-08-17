@@ -20,11 +20,22 @@ const DAYS = [
   { value: 0, label: "Sunday" },
 ];
 
+// Default suggested exam date: 24 weeks out, nudged to the next Saturday for test-center
+// convenience. The BJT is booked on-demand via Pearson VUE (no fixed sitting dates), so this
+// is just a sensible placeholder — editable, and meant to be confirmed against real availability
+// closer to the date.
+function suggestedExamDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 24 * 7);
+  while (d.getDay() !== 6) d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
 export default function OnboardingPage() {
   const router = useRouter();
   const { updateProfile } = useAuth();
   const [step, setStep] = React.useState(0);
-  const [examDate, setExamDate] = React.useState("");
+  const [examDate, setExamDate] = React.useState(suggestedExamDate);
   const [studyDays, setStudyDays] = React.useState<number[]>([1, 3, 5, 0]);
   const [duration, setDuration] = React.useState<DurationOption>(3);
   const [saving, setSaving] = React.useState(false);
@@ -75,7 +86,9 @@ export default function OnboardingPage() {
             className="h-10 w-full rounded-lg border border-border-strong bg-surface px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
           />
           <p className="text-xs text-muted-foreground">
-            Not booked yet? Leave blank — we'll default to a 24-week countdown and you can set it later in Settings.
+            Pre-filled to a Saturday 24 weeks out — the BJT is booked on-demand via Pearson VUE (no fixed sitting
+            dates, and you can only sit once every 3 months), so treat this as your study target and confirm the
+            actual slot on Pearson VUE closer to the date. Adjust it here anytime.
           </p>
         </div>
       ),

@@ -270,19 +270,18 @@ export function getSession(week: number, day: number) {
 
 // Source: Part 28 — Day 1, Complete Lesson (minute-by-minute)
 export const day1Blocks = [
-  { time: "0:00–0:10", minutes: 10, activity: "Set up. Install Anki + create 5 decks (Part 19). Open Jisho, YouTube, and the BJT demo in tabs.", stepTitle: "Set Up" },
-  { time: "0:10–0:20", minutes: 10, activity: "Warm-up: read the hiragana/katakana charts aloud once for speed. (No Anki reviews yet — day 1.)", stepTitle: "Warm-up" },
+  { time: "0:00–0:10", minutes: 10, activity: "Set up. Open Jisho, YouTube, and the BJT demo in tabs — your Flashcards deck is already built into the app.", stepTitle: "Set Up" },
+  { time: "0:10–0:20", minutes: 10, activity: "Warm-up: read the hiragana/katakana charts aloud once for speed. (No flashcard reviews yet — day 1.)", stepTitle: "Warm-up" },
   { time: "0:20–1:05", minutes: 45, activity: "GRAMMAR: です/ます + は/が/を. Watch Japanese Ammo with Misa \"は vs が\" then write 5 です/ます sentences about your day.", stepTitle: "Grammar" },
-  { time: "1:05–1:50", minutes: 45, activity: "VOCABULARY: learn the 10 office words (会社, 仕事, 会議, 資料, 電話, 部長, 課長, 同僚, 名前, 今日). Add each to Anki with a Jisho example sentence + audio.", stepTitle: "Vocabulary" },
+  { time: "1:05–1:50", minutes: 45, activity: "VOCABULARY: learn the 10 office words (会社, 仕事, 会議, 資料, 電話, 部長, 課長, 同僚, 名前, 今日). They're already in your Flashcards deck — review them there with a Jisho example sentence.", stepTitle: "Vocabulary" },
   { time: "1:50–2:00", minutes: 10, activity: "Break.", stepTitle: "Break" },
   { time: "2:00–2:20", minutes: 20, activity: "KANJI: recognise 一〜十, 百, 千, 円. Read them inside 千円, 百円, 三時.", stepTitle: "Kanji" },
-  { time: "2:20–2:30", minutes: 10, activity: "BUSINESS PHRASES: お疲れ様です / おはようございます / お先に失礼します. Add to Anki.", stepTitle: "Business Phrases" },
+  { time: "2:20–2:30", minutes: 10, activity: "BUSINESS PHRASES: お疲れ様です / おはようございます / お先に失礼します. Already in your Flashcards deck.", stepTitle: "Business Phrases" },
   { time: "2:30–2:55", minutes: 25, activity: "LISTENING + SHADOWING: Comprehensible Japanese \"Complete Beginner\" video — watch once no subs, once with; then shadow 10 min.", stepTitle: "Listening + Shadowing" },
   { time: "2:55–3:00", minutes: 5, activity: "MINI-TEST + LOG: self-quiz 10 words + 3 phrases (aim 8/10). Jot tomorrow's start point. Do Mission 1 on your next Lawson shift.", stepTitle: "Mini-Test + Log" },
 ];
 
 export const day1Links = [
-  { label: "Anki download", url: "https://apps.ankiweb.net/" },
   { label: "Japanese Ammo with Misa — は vs が (search on channel)", url: "https://www.youtube.com/@JapaneseAmmowithMisa" },
   { label: "Comprehensible Japanese — Complete Beginner", url: "https://www.youtube.com/@cijapanese" },
   { label: "Jisho dictionary", url: "https://jisho.org/" },

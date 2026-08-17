@@ -30,7 +30,7 @@ function ResourcesInner() {
     <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
       <h1 className="text-2xl font-semibold">Resources Library</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        A deliberately small kit. If money is tight, the non-negotiables are the two official BJT books + Anki + Jisho + free YouTube listening.
+        A deliberately small kit. If money is tight, the non-negotiables are the two official BJT books + Jisho + free YouTube listening — flashcards are already built into this app.
       </p>
 
       <div className="mt-5 flex flex-col gap-2 sm:flex-row">

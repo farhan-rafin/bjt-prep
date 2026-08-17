@@ -25,7 +25,7 @@ export interface TimeBlock {
 // Source: Part 6 — Time-boxed versions of each day (minutes per block)
 export const dayBlocks: Record<DayNumber, TimeBlock[]> = {
   1: [
-    { label: "Warm-up review (Anki)", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
+    { label: "Warm-up review (Flashcards)", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
     { label: "Grammar (new patterns)", minutes: { 2: 35, 3: 45, 4: 55, 5: 70 } },
     { label: "Vocabulary (new + drill)", minutes: { 2: 30, 3: 45, 4: 55, 5: 70 } },
     { label: "Kanji recognition", minutes: { 2: 20, 3: 30, 4: 40, 5: 50 } },
@@ -33,21 +33,21 @@ export const dayBlocks: Record<DayNumber, TimeBlock[]> = {
     { label: "Log + tomorrow prep", minutes: { 2: 0, 3: 10, 4: 10, 5: 30 } },
   ],
   2: [
-    { label: "Anki listening cards", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
+    { label: "Flashcard review — listening", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
     { label: "Intensive listening", minutes: { 2: 45, 3: 60, 4: 75, 5: 90 } },
     { label: "Business-situation dialogue study", minutes: { 2: 25, 3: 35, 4: 45, 5: 60 } },
     { label: "Shadowing", minutes: { 2: 25, 3: 35, 4: 45, 5: 60 } },
     { label: "Real-life mission review", minutes: { 2: 10, 3: 10, 4: 10, 5: 30 } },
   ],
   3: [
-    { label: "Anki keigo/vocab", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
+    { label: "Flashcard review — keigo/vocab", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
     { label: "Reading speed drill", minutes: { 2: 35, 3: 45, 4: 55, 5: 70 } },
     { label: "Keigo situation study", minutes: { 2: 30, 3: 45, 4: 55, 5: 70 } },
     { label: "Workplace communication module", minutes: { 2: 25, 3: 35, 4: 45, 5: 60 } },
     { label: "Short listening (must-do)", minutes: { 2: 15, 3: 25, 4: 30, 5: 50 } },
   ],
   4: [
-    { label: "Anki full review", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
+    { label: "Flashcard review — full deck", minutes: { 2: 15, 3: 20, 4: 25, 5: 30 } },
     { label: "BJT question sets (by type)", minutes: { 2: 45, 3: 60, 4: 75, 5: 95 } },
     { label: "Weekly test (all skills)", minutes: { 2: 30, 3: 40, 4: 50, 5: 60 } },
     { label: "Error analysis + mistake log", minutes: { 2: 20, 3: 35, 4: 45, 5: 65 } },
