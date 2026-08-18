@@ -3,15 +3,17 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { readingPassages } from "@/content";
 import { formatClock, useStudyTimer } from "@/lib/hooks/use-study-timer";
 import { JapaneseAuto } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
+import { CombinedItemRunner } from "@/components/reading/combined-item-runner";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function ReadingPage() {
+function TimedPassages() {
   const { rows: timings, insert } = useUserTable("reading_timings");
   const [selected, setSelected] = React.useState<(typeof readingPassages)[number] | null>(null);
   const [phase, setPhase] = React.useState<"question" | "reading" | "answering" | "result">("question");
@@ -51,9 +53,8 @@ export default function ReadingPage() {
     : null;
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-6 lg:py-10">
-      <h1 className="text-2xl font-semibold">Reading Center</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
+    <div>
+      <p className="mb-4 text-sm text-muted-foreground">
         Question first → scan → answer. Trains the exact strategy the Reading section rewards.
       </p>
 
@@ -138,6 +139,28 @@ export default function ReadingPage() {
           </CardContent>
         </Card>
       )}
+    </div>
+  );
+}
+
+export default function ReadingPage() {
+  return (
+    <div className="mx-auto max-w-2xl px-4 py-6 lg:py-10">
+      <h1 className="text-2xl font-semibold">Reading Center</h1>
+      <p className="mt-1 text-sm text-muted-foreground">BJT-focused reading practice, timed and combined.</p>
+
+      <Tabs defaultValue="timed" className="mt-5">
+        <TabsList>
+          <TabsTrigger value="timed">Timed Passages</TabsTrigger>
+          <TabsTrigger value="combined">Part II Practice</TabsTrigger>
+        </TabsList>
+        <TabsContent value="timed">
+          <TimedPassages />
+        </TabsContent>
+        <TabsContent value="combined">
+          <CombinedItemRunner />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

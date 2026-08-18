@@ -12,6 +12,7 @@ import { keigoPhrases, keigoTypeInfo, keigoSampleDialogue, whoSaysThisGame } fro
 import { QuizShell, type QuizItem } from "@/components/quiz/quiz-shell";
 import { Furigana } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
+import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 import { Bookmark, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -22,6 +23,7 @@ function KeigoInner() {
   const searchParams = useSearchParams();
   const [query, setQuery] = React.useState(searchParams.get("q") ?? "");
   const { map, toggleBookmark } = useItemStatus("grammar_status", "grammar_id");
+  const showFurigana = useShowFurigana();
   const { upsert: upsertFlashcard } = useUserTable("flashcards");
 
   const filtered = keigoPhrases.filter((k) => !query || k.phrase.includes(query) || k.meaning.toLowerCase().includes(query.toLowerCase()));
@@ -97,7 +99,7 @@ function KeigoInner() {
                                 <p className="jp text-lg font-medium">{k.phrase}</p>
                                 <SpeakButton text={k.phrase} />
                               </div>
-                              <p className="jp text-sm text-muted-foreground">{k.reading}</p>
+                              {showFurigana && <p className="jp text-sm text-muted-foreground">{k.reading}</p>}
                               <p className="text-sm">{k.meaning}</p>
                             </div>
                             <div className="flex shrink-0 items-center gap-2">

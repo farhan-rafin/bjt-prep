@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { JapaneseAuto } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
+import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 
 function VocabularyInner() {
   const searchParams = useSearchParams();
@@ -23,6 +24,7 @@ function VocabularyInner() {
   const [filter, setFilter] = React.useState<string>("all");
   const { map, setStatus, toggleBookmark } = useItemStatus("vocab_status", "vocab_id");
   const { upsert: upsertFlashcard } = useUserTable("flashcards");
+  const showFurigana = useShowFurigana();
 
   const learnedCount = vocabulary.filter((v) => map.get(v.id)?.status === "learned").length;
 
@@ -94,7 +96,7 @@ function VocabularyInner() {
                       <p className="jp text-lg font-medium">{v.japanese}</p>
                       <SpeakButton text={v.japanese} />
                     </div>
-                    <p className="jp text-sm text-muted-foreground">{v.reading}</p>
+                    {showFurigana && <p className="jp text-sm text-muted-foreground">{v.reading}</p>}
                     <p className="mt-1 text-sm">{v.meaning}</p>
                     {v.example && (
                       <div className="mt-1">

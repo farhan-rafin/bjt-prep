@@ -11,6 +11,7 @@ import { nextSrsState, type Rating } from "@/lib/srs";
 import { buildAllFlashcards } from "@/lib/seed-flashcards";
 import { findCurrentPosition } from "@/lib/progress";
 import { SpeakButton } from "@/components/speak-button";
+import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 import { Star, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -27,6 +28,7 @@ function splitBack(back: string): [string | null, string] {
 
 export default function FlashcardsPage() {
   const { user } = useAuth();
+  const showFurigana = useShowFurigana();
   const supabase = React.useMemo(() => createClient(), []);
   const { rows: cards, update, loading, refetch } = useUserTable("flashcards");
   const { insert: insertReview } = useUserTable("flashcard_reviews");
@@ -165,7 +167,7 @@ export default function FlashcardsPage() {
                           <p className="jp text-2xl font-medium">{current.front}</p>
                           <SpeakButton text={current.front} size="md" />
                         </div>
-                        {reading && <p className="jp text-base text-muted-foreground">{reading}</p>}
+                        {reading && showFurigana && <p className="jp text-base text-muted-foreground">{reading}</p>}
                         {flipped && (
                           <div className="mt-2 flex flex-col gap-1">
                             <p className="jp text-lg text-primary">{rest}</p>

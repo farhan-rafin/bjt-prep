@@ -10,6 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useItemStatus } from "@/lib/hooks/use-item-status";
 import { kanjiItems, kanjiCategories, kanjiTotalTarget, kanjiWeeklyTarget } from "@/content";
 import { SpeakButton } from "@/components/speak-button";
+import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 import { Bookmark, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { KanjiQuiz } from "@/components/kanji/kanji-quiz";
@@ -20,6 +21,7 @@ function KanjiInner() {
   const [category, setCategory] = React.useState("all");
   const [filter, setFilter] = React.useState("all");
   const { map, setStatus, toggleBookmark } = useItemStatus("kanji_status", "kanji_id");
+  const showFurigana = useShowFurigana();
 
   const learnedCount = kanjiItems.filter((k) => map.get(k.id)?.status === "learned").length;
 
@@ -84,7 +86,7 @@ function KanjiInner() {
                           <p className="jp text-3xl font-medium">{k.kanji}</p>
                           <SpeakButton text={k.kanji} />
                         </div>
-                        <p className="jp mt-1 text-sm text-muted-foreground">{k.reading}</p>
+                        {showFurigana && <p className="jp mt-1 text-sm text-muted-foreground">{k.reading}</p>}
                         <p className="text-sm">{k.meaning}</p>
                         <p className="jp mt-1 text-xs text-muted-foreground">{k.compounds.join(" · ")}</p>
                         <Badge variant="outline" className="mt-2">{k.category} · Week {k.week}</Badge>

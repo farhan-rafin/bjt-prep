@@ -12,3 +12,4 @@ export * from "./missions";
 export * from "./checkpoints";
 export * from "./four-day-system";
 export * from "./reading-passages";
+export * from "./combined-items";

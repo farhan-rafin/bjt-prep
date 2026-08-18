@@ -1,10 +1,15 @@
 "use client";
 import * as React from "react";
 import { vocabulary, kanjiItems, keigoPhrases } from "@/content";
+import { useAuth } from "@/lib/auth-context";
 
-/** Word/phrase with its own reading — shown as furigana (ruby) above the text. */
+/** Word/phrase with its own reading — shown as furigana (ruby) above the text.
+ * Respects the learner's "Show furigana" preference (Settings) — off means Test Mode,
+ * hiding readings so recognition can actually be checked. */
 export function Furigana({ text, reading, className }: { text: string; reading?: string | null; className?: string }) {
-  if (!reading) return <span className={className}>{text}</span>;
+  const { profile } = useAuth();
+  const show = profile?.show_furigana ?? true;
+  if (!reading || !show) return <span className={className}>{text}</span>;
   return (
     <ruby className={className}>
       {text}
@@ -33,8 +38,16 @@ function buildDictionary(): DictEntry[] {
 
 /** Renders Japanese text with furigana auto-applied over any word/kanji we have a reading for
  * (matched against the vocabulary/keigo/kanji content). Words we don't recognise render plainly —
- * partial coverage beats none, since this app has no offline dictionary for arbitrary text. */
+ * partial coverage beats none, since this app has no offline dictionary for arbitrary text.
+ * Respects the "Show furigana" preference — off hides all auto-applied readings (Test Mode). */
 export function JapaneseAuto({ text, className }: { text: string; className?: string }) {
+  const { profile } = useAuth();
+  const show = profile?.show_furigana ?? true;
+
+  if (!show) {
+    return <span className={className ? className + " jp" : "jp"}>{text}</span>;
+  }
+
   const dict = buildDictionary();
   const nodes: React.ReactNode[] = [];
   let i = 0;
