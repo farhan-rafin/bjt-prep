@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 import { nextSrsState, type Rating } from "@/lib/srs";
 import { buildAllFlashcards } from "@/lib/seed-flashcards";
 import { findCurrentPosition } from "@/lib/progress";
+import { SpeakButton } from "@/components/speak-button";
 import { Star, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -160,7 +161,10 @@ export default function FlashcardsPage() {
                     const [reading, rest] = splitBack(current.back);
                     return (
                       <>
-                        <p className="jp text-2xl font-medium">{current.front}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="jp text-2xl font-medium">{current.front}</p>
+                          <SpeakButton text={current.front} size="md" />
+                        </div>
                         {reading && <p className="jp text-base text-muted-foreground">{reading}</p>}
                         {flipped && (
                           <div className="mt-2 flex flex-col gap-1">

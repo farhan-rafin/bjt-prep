@@ -28,9 +28,9 @@ export const keigoTypeInfo = {
 
 // Source: Part 10 — Example dialogue (customer service)
 export const keigoSampleDialogue = [
-  { speaker: "客", line: "すみません、この商品はありますか。", reading: "すみません、このしょうひんはありますか。" },
-  { speaker: "店員", line: "少々お待ちください。確認いたします。", reading: "しょうしょうおまちください。かくにんいたします。" },
-  { speaker: "店員", line: "恐れ入りますが、ただいま在庫がございません。申し訳ございません。", reading: "おそれいりますが、ただいまざいこがございません。もうしわけございません。" },
+  { speaker: "客", line: "すみません、この商品はありますか。", reading: "すみません、このしょうひんはありますか。", meaning: "Excuse me, do you have this item?" },
+  { speaker: "店員", line: "少々お待ちください。確認いたします。", reading: "しょうしょうおまちください。かくにんいたします。", meaning: "One moment please. I'll check for you." },
+  { speaker: "店員", line: "恐れ入りますが、ただいま在庫がございません。申し訳ございません。", reading: "おそれいりますが、ただいまざいこがございません。もうしわけございません。", meaning: "I'm sorry to say we're currently out of stock. I apologise." },
 ];
 
 export interface WhoSaysThisQuestion {

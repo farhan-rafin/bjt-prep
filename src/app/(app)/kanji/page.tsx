@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useItemStatus } from "@/lib/hooks/use-item-status";
 import { kanjiItems, kanjiCategories, kanjiTotalTarget, kanjiWeeklyTarget } from "@/content";
+import { SpeakButton } from "@/components/speak-button";
 import { Bookmark, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { KanjiQuiz } from "@/components/kanji/kanji-quiz";
@@ -79,7 +80,10 @@ function KanjiInner() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <p className="jp text-3xl font-medium">{k.kanji}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="jp text-3xl font-medium">{k.kanji}</p>
+                          <SpeakButton text={k.kanji} />
+                        </div>
                         <p className="jp mt-1 text-sm text-muted-foreground">{k.reading}</p>
                         <p className="text-sm">{k.meaning}</p>
                         <p className="jp mt-1 text-xs text-muted-foreground">{k.compounds.join(" · ")}</p>

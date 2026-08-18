@@ -58,7 +58,9 @@ export interface GrammarPoint {
   meaning: string;
   whenUsed?: string;
   simpleExample?: string;
+  simpleExampleMeaning?: string;
   businessExample: string;
+  businessExampleMeaning?: string;
   commonMistake?: string;
 }
 
@@ -99,7 +101,7 @@ export interface KeigoPhrase {
 export interface BusinessScenario {
   id: string;
   category: string;
-  dialogue: { speaker: string; line: string }[];
+  dialogue: { speaker: string; line: string; reading: string; meaning: string }[];
   note?: string;
 }
 

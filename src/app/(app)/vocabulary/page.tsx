@@ -14,6 +14,7 @@ import { Bookmark, Plus, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { JapaneseAuto } from "@/components/japanese-text";
+import { SpeakButton } from "@/components/speak-button";
 
 function VocabularyInner() {
   const searchParams = useSearchParams();
@@ -89,7 +90,10 @@ function VocabularyInner() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="jp text-lg font-medium">{v.japanese}</p>
+                    <div className="flex items-center gap-1.5">
+                      <p className="jp text-lg font-medium">{v.japanese}</p>
+                      <SpeakButton text={v.japanese} />
+                    </div>
                     <p className="jp text-sm text-muted-foreground">{v.reading}</p>
                     <p className="mt-1 text-sm">{v.meaning}</p>
                     {v.example && (

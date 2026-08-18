@@ -11,6 +11,7 @@ import { useUserTable } from "@/lib/hooks/use-user-table";
 import { keigoPhrases, keigoTypeInfo, keigoSampleDialogue, whoSaysThisGame } from "@/content";
 import { QuizShell, type QuizItem } from "@/components/quiz/quiz-shell";
 import { Furigana } from "@/components/japanese-text";
+import { SpeakButton } from "@/components/speak-button";
 import { Bookmark, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -51,10 +52,14 @@ function KeigoInner() {
         <CardContent className="p-4">
           <p className="mb-2 text-xs font-medium text-muted-foreground">Example — customer service</p>
           {keigoSampleDialogue.map((d, i) => (
-            <p key={i} className="text-sm">
-              <span className="font-medium text-muted-foreground">{d.speaker}: </span>
-              <Furigana text={d.line} reading={d.reading} className="jp" />
-            </p>
+            <div key={i} className="mb-2 last:mb-0">
+              <p className="flex items-center gap-1 text-sm">
+                <span className="font-medium text-muted-foreground">{d.speaker}: </span>
+                <Furigana text={d.line} reading={d.reading} className="jp" />
+                <SpeakButton text={d.line} />
+              </p>
+              <p className="pl-7 text-xs italic text-muted-foreground/80">{d.meaning}</p>
+            </div>
           ))}
         </CardContent>
       </Card>
@@ -88,7 +93,10 @@ function KeigoInner() {
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <p className="jp text-lg font-medium">{k.phrase}</p>
+                              <div className="flex items-center gap-1.5">
+                                <p className="jp text-lg font-medium">{k.phrase}</p>
+                                <SpeakButton text={k.phrase} />
+                              </div>
                               <p className="jp text-sm text-muted-foreground">{k.reading}</p>
                               <p className="text-sm">{k.meaning}</p>
                             </div>

@@ -1,4 +1,6 @@
 "use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -7,7 +9,10 @@ import { IntensiveListeningWorkflow } from "@/components/listening/intensive-wor
 import { ShadowingMode } from "@/components/listening/shadowing-mode";
 import { ExternalLink } from "lucide-react";
 
-export default function ListeningPage() {
+function ListeningInner() {
+  const searchParams = useSearchParams();
+  const defaultTab = searchParams.get("shadow") ? "shadowing" : "resources";
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
       <h1 className="text-2xl font-semibold">Listening Center</h1>
@@ -15,7 +20,7 @@ export default function ListeningPage() {
         Your highest-priority skill. {bjtKeyFacts.sections.split("·")[0]} — verified resources only.
       </p>
 
-      <Tabs defaultValue="resources" className="mt-5">
+      <Tabs defaultValue={defaultTab} className="mt-5">
         <TabsList>
           <TabsTrigger value="resources">Resources</TabsTrigger>
           <TabsTrigger value="workflow">Intensive Method</TabsTrigger>
@@ -71,5 +76,13 @@ export default function ListeningPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function ListeningPage() {
+  return (
+    <Suspense fallback={null}>
+      <ListeningInner />
+    </Suspense>
   );
 }

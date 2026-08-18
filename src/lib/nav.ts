@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Sunrise, Map, BookMarked, Type, SpellCheck, MessageSquareQuote,
   Headphones, BookOpen, Target, Layers, ClipboardCheck, AlertTriangle, Library,
-  NotebookPen, LineChart, CalendarClock, ListChecks, Settings, Flag,
+  NotebookPen, LineChart, CalendarClock, ListChecks, Settings, Flag, Users,
 } from "lucide-react";
 
 export interface NavItem {
@@ -18,6 +18,7 @@ export const mainNav: NavItem[] = [
   { href: "/kanji", label: "Kanji", icon: Type },
   { href: "/grammar", label: "Grammar", icon: SpellCheck },
   { href: "/keigo", label: "Keigo Lab", icon: MessageSquareQuote },
+  { href: "/scenarios", label: "Business Situations", icon: Users },
   { href: "/listening", label: "Listening", icon: Headphones },
   { href: "/reading", label: "Reading", icon: BookOpen },
   { href: "/bjt", label: "BJT Practice", icon: Target },

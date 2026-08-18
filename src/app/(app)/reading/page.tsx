@@ -7,6 +7,7 @@ import { useUserTable } from "@/lib/hooks/use-user-table";
 import { readingPassages } from "@/content";
 import { formatClock, useStudyTimer } from "@/lib/hooks/use-study-timer";
 import { JapaneseAuto } from "@/components/japanese-text";
+import { SpeakButton } from "@/components/speak-button";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -88,7 +89,10 @@ export default function ReadingPage() {
                   <span className="font-mono text-xl tabular-nums">{formatClock(timer.elapsedSec)}</span>
                   <Badge variant="outline">Question: {selected.question}</Badge>
                 </div>
-                <p className="jp mb-1 whitespace-pre-line text-base leading-relaxed">{selected.text}</p>
+                <div className="mb-1 flex items-start gap-1.5">
+                  <p className="jp whitespace-pre-line text-base leading-relaxed">{selected.text}</p>
+                  <SpeakButton text={selected.text} rate={0.85} />
+                </div>
                 <p className="jp mb-6 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{selected.textReading}</p>
                 <p className="mb-2 text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
                 <div className="flex flex-col gap-2">
@@ -122,6 +126,10 @@ export default function ReadingPage() {
                     <p className="text-lg font-semibold">{previousBest ? formatClock(previousBest.completion_seconds) : "—"}</p>
                   </div>
                 </div>
+                <details className="mt-4">
+                  <summary className="cursor-pointer text-sm font-medium text-muted-foreground">Show English translation</summary>
+                  <p className="mt-2 text-sm text-muted-foreground">{selected.textMeaning}</p>
+                </details>
                 <Button variant="outline" className="mt-4" onClick={() => setSelected(null)}>
                   Back to passages
                 </Button>
