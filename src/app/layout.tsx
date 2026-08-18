@@ -3,6 +3,7 @@ import { Inter, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
+import { SwRegister } from "@/components/sw-register";
 import { Toaster } from "sonner";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <AuthProvider>
             {children}
             <Toaster position="bottom-right" richColors />
+            <SwRegister />
           </AuthProvider>
         </ThemeProvider>
       </body>
