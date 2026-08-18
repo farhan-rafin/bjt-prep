@@ -10,7 +10,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { useAuth } from "@/lib/auth-context";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
-import { Plus } from "lucide-react";
+import { TimedMockRunner } from "@/components/mock-exam/timed-mock-runner";
+import { mockLengthConfig, type MockLength } from "@/lib/mock-exam";
+import { Plus, Timer } from "lucide-react";
 import { toast } from "sonner";
 
 const scoreTypes = [
@@ -19,10 +21,13 @@ const scoreTypes = [
   { value: "actual_bjt", label: "Actual BJT score" },
 ];
 
+const mockLengths = Object.keys(mockLengthConfig) as MockLength[];
+
 export default function MockTestsPage() {
   const { profile } = useAuth();
   const { rows: mocks, insert } = useUserTable("mock_tests");
   const [open, setOpen] = React.useState(false);
+  const [activeMockLength, setActiveMockLength] = React.useState<MockLength | null>(null);
   const [form, setForm] = React.useState({
     test_date: new Date().toISOString().slice(0, 10),
     score_type: "estimated_bjt",
@@ -53,6 +58,14 @@ export default function MockTestsPage() {
     toast.success("Mock test recorded");
   }
 
+  if (activeMockLength) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
+        <TimedMockRunner length={activeMockLength} onExit={() => setActiveMockLength(null)} />
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 lg:py-10">
       <div className="flex items-center justify-between">
@@ -62,6 +75,26 @@ export default function MockTestsPage() {
         </Button>
       </div>
       <p className="mt-1 text-sm text-muted-foreground">Target: {profile?.target_score ?? 420}+</p>
+
+      <Card className="mt-5">
+        <CardHeader><CardTitle>Start a Timed Mock</CardTitle></CardHeader>
+        <CardContent className="grid gap-2 pt-2 sm:grid-cols-3">
+          {mockLengths.map((len) => {
+            const cfg = mockLengthConfig[len];
+            return (
+              <button
+                key={len}
+                onClick={() => setActiveMockLength(len)}
+                className="flex flex-col items-start gap-1 rounded-lg border border-border p-4 text-left transition-colors hover:bg-surface-muted"
+              >
+                <Timer className="size-4 text-primary" />
+                <span className="font-medium capitalize">{len}</span>
+                <span className="text-xs text-muted-foreground">{cfg.label}</span>
+              </button>
+            );
+          })}
+        </CardContent>
+      </Card>
 
       <Card className="mt-5">
         <CardHeader><CardTitle>Score Progress</CardTitle></CardHeader>

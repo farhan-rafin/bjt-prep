@@ -1,7 +1,7 @@
 import { grammarPoints, vocabulary, kanjiItems, whoSaysThisGame, scenarioQuizItems, practiceQuestions, clozeQuestions } from "@/content";
 import type { QuizItem } from "@/components/quiz/quiz-shell";
 
-function shuffle<T>(arr: T[]): T[] {
+export function shuffle<T>(arr: T[]): T[] {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
@@ -25,7 +25,7 @@ export function buildGrammarQuiz(): QuizItem[] {
     });
 }
 
-function buildVocabQuiz(n: number): QuizItem[] {
+export function buildVocabQuiz(n: number): QuizItem[] {
   const pool = shuffle(vocabulary).slice(0, n);
   return pool.map((v) => {
     const distractors = shuffle(vocabulary.filter((x) => x.id !== v.id)).slice(0, 3).map((x) => x.meaning);
@@ -41,7 +41,7 @@ function buildVocabQuiz(n: number): QuizItem[] {
   });
 }
 
-function buildKanjiQuizItems(n: number): QuizItem[] {
+export function buildKanjiQuizItems(n: number): QuizItem[] {
   const pool = shuffle(kanjiItems).slice(0, n);
   return pool.map((k) => {
     const distractors = shuffle(kanjiItems.filter((x) => x.id !== k.id)).slice(0, 3).map((x) => x.reading);
