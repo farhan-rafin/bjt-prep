@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useItemStatus } from "@/lib/hooks/use-item-status";
-import { grammarPoints, grammarTierInfo } from "@/content";
+import { grammarPoints, grammarTierInfo, clozeQuestions } from "@/content";
 import { buildGrammarQuiz } from "@/lib/quiz-generators";
+import type { QuizItem } from "@/components/quiz/quiz-shell";
 import { QuizShell } from "@/components/quiz/quiz-shell";
 import { NoteDialog } from "@/components/notes/note-dialog";
 import { JapaneseAuto } from "@/components/japanese-text";
@@ -25,6 +26,10 @@ function GrammarInner() {
   const { map, setStatus, toggleBookmark } = useItemStatus("grammar_status", "grammar_id");
   const [noteFor, setNoteFor] = React.useState<(typeof grammarPoints)[number] | null>(null);
   const quizItems = React.useMemo(() => buildGrammarQuiz(), []);
+  const clozeItems: QuizItem[] = React.useMemo(
+    () => clozeQuestions.map((c) => ({ id: c.id, prompt: c.prompt, options: c.options, correctIndex: c.correctIndex, explanation: c.explanation, category: "Grammar" })),
+    [],
+  );
 
   const filtered = grammarPoints.filter(
     (g) => !query || g.pattern.includes(query) || g.meaning.toLowerCase().includes(query.toLowerCase()),
@@ -112,7 +117,19 @@ function GrammarInner() {
           })}
         </TabsContent>
         <TabsContent value="quiz">
-          <QuizShell items={quizItems} quizType="grammar" />
+          <Tabs defaultValue="cloze">
+            <TabsList>
+              <TabsTrigger value="cloze">Fill in the Blank</TabsTrigger>
+              <TabsTrigger value="pattern">Which Pattern?</TabsTrigger>
+            </TabsList>
+            <TabsContent value="cloze">
+              <p className="mb-3 text-xs text-muted-foreground">Real BJT Part III format — choose the word/form that completes the sentence.</p>
+              <QuizShell items={clozeItems} quizType="grammar_cloze" />
+            </TabsContent>
+            <TabsContent value="pattern">
+              <QuizShell items={quizItems} quizType="grammar" />
+            </TabsContent>
+          </Tabs>
         </TabsContent>
       </Tabs>
 

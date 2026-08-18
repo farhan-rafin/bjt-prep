@@ -3,7 +3,7 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { bjtQuestionTypes, bjtKeyFacts, practiceQuestions, scenarioQuizItems } from "@/content";
+import { bjtQuestionTypes, bjtKeyFacts, practiceQuestions, scenarioQuizItems, clozeQuestions, whoSaysThisGame } from "@/content";
 import { QuizShell, type QuizItem } from "@/components/quiz/quiz-shell";
 import { ExternalLink, ChevronDown } from "lucide-react";
 
@@ -20,6 +20,8 @@ export default function BjtPracticePage() {
   const quizItems: QuizItem[] = [
     ...practiceQuestions.map((q) => ({ id: q.id, prompt: q.prompt, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: "BJT Practice" })),
     ...scenarioQuizItems.map((q) => ({ id: q.id, prompt: q.prompt, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: q.category })),
+    ...clozeQuestions.map((q) => ({ id: q.id, prompt: q.prompt, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: "Vocabulary / Grammar" })),
+    ...whoSaysThisGame.map((q) => ({ id: q.id, prompt: q.phrase, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: "Keigo" })),
   ];
 
   return (

@@ -1,4 +1,4 @@
-import { grammarPoints, vocabulary, kanjiItems, whoSaysThisGame, scenarioQuizItems, practiceQuestions } from "@/content";
+import { grammarPoints, vocabulary, kanjiItems, whoSaysThisGame, scenarioQuizItems, practiceQuestions, clozeQuestions } from "@/content";
 import type { QuizItem } from "@/components/quiz/quiz-shell";
 
 function shuffle<T>(arr: T[]): T[] {
@@ -60,7 +60,9 @@ function buildKanjiQuizItems(n: number): QuizItem[] {
 export function buildWeeklyTestQuiz(): QuizItem[] {
   const vocab = buildVocabQuiz(4).map((q) => ({ ...q, category: "Vocabulary" }));
   const kanji = buildKanjiQuizItems(3).map((q) => ({ ...q, category: "Kanji recognition" }));
-  const grammar = buildGrammarQuiz().slice(0, 3).map((q) => ({ ...q, category: "Grammar" }));
+  const grammar = shuffle(clozeQuestions).slice(0, 3).map((q) => ({
+    id: q.id, prompt: q.prompt, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: "Grammar",
+  }));
   const keigo = shuffle(whoSaysThisGame).slice(0, 2).map((q) => ({
     id: q.id, prompt: q.phrase, options: q.options, correctIndex: q.correctIndex, explanation: q.explanation, category: "Keigo",
   }));
