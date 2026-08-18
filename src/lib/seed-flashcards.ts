@@ -58,7 +58,7 @@ export function buildAllFlashcards(currentWeek: number): SeedFlashcard[] {
       source_id: v.id,
       front: v.japanese,
       back: `${v.reading} — ${v.meaning}`,
-      example: v.example ?? null,
+      example: v.example ? (v.exampleMeaning ? `${v.example} (${v.exampleMeaning})` : v.example) : null,
       due_at: dueForWeek(weekForVocab(v, idx), currentWeek),
     });
   });

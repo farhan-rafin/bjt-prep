@@ -6,11 +6,11 @@ import { VocabItem } from "./types";
 // since the source gives cluster names + counts for weeks 5-24 rather than an exhaustive word list.
 export const vocabulary: VocabItem[] = [
   // Week 1 D1 — Office basics
-  { id: "v-kaisha", japanese: "会社", reading: "かいしゃ", meaning: "company", category: "Office & People", month: 1, example: "私の会社は大分県にあります。" },
-  { id: "v-shigoto", japanese: "仕事", reading: "しごと", meaning: "work / job", category: "Office & People", month: 1, example: "今日は仕事が忙しいです。" },
-  { id: "v-kaigi", japanese: "会議", reading: "かいぎ", meaning: "meeting", category: "Meetings", month: 1, example: "会議は3時です。" },
-  { id: "v-shiryou", japanese: "資料", reading: "しりょう", meaning: "materials / documents", category: "Documents", month: 1, example: "資料を送っていただけますか。" },
-  { id: "v-denwa", japanese: "電話", reading: "でんわ", meaning: "telephone / phone call", category: "Telephone", month: 1, example: "電話がかかってきました。" },
+  { id: "v-kaisha", japanese: "会社", reading: "かいしゃ", meaning: "company", category: "Office & People", month: 1, example: "私の会社は大分県にあります。", exampleMeaning: "My company is in Oita Prefecture." },
+  { id: "v-shigoto", japanese: "仕事", reading: "しごと", meaning: "work / job", category: "Office & People", month: 1, example: "今日は仕事が忙しいです。", exampleMeaning: "Work is busy today." },
+  { id: "v-kaigi", japanese: "会議", reading: "かいぎ", meaning: "meeting", category: "Meetings", month: 1, example: "会議は3時です。", exampleMeaning: "The meeting is at 3 o'clock." },
+  { id: "v-shiryou", japanese: "資料", reading: "しりょう", meaning: "materials / documents", category: "Documents", month: 1, example: "資料を送っていただけますか。", exampleMeaning: "Could you send me the documents?" },
+  { id: "v-denwa", japanese: "電話", reading: "でんわ", meaning: "telephone / phone call", category: "Telephone", month: 1, example: "電話がかかってきました。", exampleMeaning: "A phone call came in." },
   { id: "v-buchou", japanese: "部長", reading: "ぶちょう", meaning: "department manager", category: "Office & People", month: 1 },
   { id: "v-kachou", japanese: "課長", reading: "かちょう", meaning: "section chief", category: "Office & People", month: 1 },
   { id: "v-douryou", japanese: "同僚", reading: "どうりょう", meaning: "colleague", category: "Office & People", month: 1 },
@@ -18,7 +18,7 @@ export const vocabulary: VocabItem[] = [
   { id: "v-kyou", japanese: "今日", reading: "きょう", meaning: "today", category: "Numbers & Time", month: 1 },
   // Week 1 D2 — schedule/time
   { id: "v-jikan", japanese: "時間", reading: "じかん", meaning: "time", category: "Numbers & Time", month: 1 },
-  { id: "v-yotei", japanese: "予定", reading: "よてい", meaning: "plan / schedule", category: "Scheduling", month: 1, example: "来週の予定を確認します。" },
+  { id: "v-yotei", japanese: "予定", reading: "よてい", meaning: "plan / schedule", category: "Scheduling", month: 1, example: "来週の予定を確認します。", exampleMeaning: "I'll check next week's schedule." },
   { id: "v-ashita", japanese: "明日", reading: "あした", meaning: "tomorrow", category: "Numbers & Time", month: 1 },
   { id: "v-kinou", japanese: "昨日", reading: "きのう", meaning: "yesterday", category: "Numbers & Time", month: 1 },
   { id: "v-gozen", japanese: "午前", reading: "ごぜん", meaning: "a.m. / morning", category: "Numbers & Time", month: 1 },
@@ -28,7 +28,7 @@ export const vocabulary: VocabItem[] = [
   { id: "v-youbi", japanese: "曜日", reading: "ようび", meaning: "day of the week", category: "Numbers & Time", month: 1 },
   { id: "v-yasumi", japanese: "休み", reading: "やすみ", meaning: "day off / break", category: "Numbers & Time", month: 1 },
   // Week 1 D3 — scheduling
-  { id: "v-shimekiri", japanese: "締め切り", reading: "しめきり", meaning: "deadline", category: "Scheduling", month: 1, example: "締め切りは金曜日です。" },
+  { id: "v-shimekiri", japanese: "締め切り", reading: "しめきり", meaning: "deadline", category: "Scheduling", month: 1, example: "締め切りは金曜日です。", exampleMeaning: "The deadline is Friday." },
   { id: "v-kigen", japanese: "期限", reading: "きげん", meaning: "deadline / time limit", category: "Scheduling", month: 1 },
   { id: "v-henkou", japanese: "変更", reading: "へんこう", meaning: "change", category: "Scheduling", month: 1 },
   { id: "v-sanka", japanese: "参加", reading: "さんか", meaning: "participation", category: "Meetings", month: 1 },
@@ -65,7 +65,7 @@ export const vocabulary: VocabItem[] = [
   { id: "v-soudan", japanese: "相談", reading: "そうだん", meaning: "consultation", category: "Reports & Orders", month: 2 },
   { id: "v-chuumon", japanese: "注文", reading: "ちゅうもん", meaning: "order", category: "Reports & Orders", month: 2 },
   { id: "v-irai", japanese: "依頼", reading: "いらい", meaning: "request", category: "Reports & Orders", month: 2 },
-  { id: "v-kakunin", japanese: "確認", reading: "かくにん", meaning: "confirmation", category: "Reports & Orders", month: 2, example: "確認いたします。" },
+  { id: "v-kakunin", japanese: "確認", reading: "かくにん", meaning: "confirmation", category: "Reports & Orders", month: 2, example: "確認いたします。", exampleMeaning: "I will check on it (humble)." },
   { id: "v-shounin", japanese: "承認", reading: "しょうにん", meaning: "approval", category: "Reports & Orders", month: 2 },
   { id: "v-mitsumori", japanese: "見積", reading: "みつもり", meaning: "estimate / quotation", category: "Accounting", month: 4 },
   { id: "v-seikyuu", japanese: "請求", reading: "せいきゅう", meaning: "invoice / billing", category: "Accounting", month: 4 },

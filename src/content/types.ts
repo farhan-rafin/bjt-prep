@@ -70,6 +70,7 @@ export interface VocabItem {
   category: string;
   month: number;
   example?: string;
+  exampleMeaning?: string;
 }
 
 export interface KanjiItem {

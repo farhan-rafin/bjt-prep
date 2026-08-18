@@ -92,7 +92,12 @@ function VocabularyInner() {
                     <p className="jp text-lg font-medium">{v.japanese}</p>
                     <p className="jp text-sm text-muted-foreground">{v.reading}</p>
                     <p className="mt-1 text-sm">{v.meaning}</p>
-                    {v.example && <p className="mt-1 text-xs text-muted-foreground"><JapaneseAuto text={v.example} /></p>}
+                    {v.example && (
+                      <div className="mt-1">
+                        <p className="text-xs text-muted-foreground"><JapaneseAuto text={v.example} /></p>
+                        {v.exampleMeaning && <p className="text-xs italic text-muted-foreground/80">{v.exampleMeaning}</p>}
+                      </div>
+                    )}
                     <Badge variant="outline" className="mt-2">{v.category}</Badge>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">
