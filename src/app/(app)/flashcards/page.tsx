@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { relativeDueLabel } from "@/lib/relative-due";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { useAuth } from "@/lib/auth-context";
 import { createClient } from "@/lib/supabase/client";
@@ -35,6 +37,7 @@ export default function FlashcardsPage() {
   const { rows: sessions, loading: loadingSessions } = useUserTable("session_progress");
 
   const [seeding, setSeeding] = React.useState(false);
+  const [browseFilter, setBrowseFilter] = React.useState("all");
   const seededRef = React.useRef(false);
   const totalDeckSize = React.useMemo(() => buildAllFlashcards(1).length, []);
 
@@ -194,18 +197,37 @@ export default function FlashcardsPage() {
           )}
         </TabsContent>
         <TabsContent value="browse">
+          <Select value={browseFilter} onValueChange={setBrowseFilter}>
+            <SelectTrigger className="mb-3 w-48"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All types</SelectItem>
+              <SelectItem value="vocab">Vocabulary</SelectItem>
+              <SelectItem value="kanji">Kanji</SelectItem>
+              <SelectItem value="grammar">Grammar</SelectItem>
+              <SelectItem value="keigo">Keigo</SelectItem>
+            </SelectContent>
+          </Select>
           <div className="flex flex-col gap-2">
-            {cards.map((c) => (
-              <Card key={c.id}>
-                <CardContent className="flex items-center justify-between p-3">
-                  <div>
-                    <p className="jp text-sm font-medium">{c.front}</p>
-                    <p className="jp text-xs text-muted-foreground">{c.back}</p>
-                  </div>
-                  <Badge variant="outline">{c.state}</Badge>
-                </CardContent>
-              </Card>
-            ))}
+            {cards
+              .filter((c) => browseFilter === "all" || c.source_type === browseFilter)
+              .sort((a, b) => new Date(a.due_at ?? 0).getTime() - new Date(b.due_at ?? 0).getTime())
+              .map((c) => {
+                const due = relativeDueLabel(c.due_at);
+                return (
+                  <Card key={c.id}>
+                    <CardContent className="flex items-center justify-between p-3">
+                      <div>
+                        <p className="jp text-sm font-medium">{c.front}</p>
+                        <p className="jp text-xs text-muted-foreground">{c.back}</p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <Badge variant="outline">{c.state}</Badge>
+                        <Badge variant={due.overdue ? "danger" : "default"}>{due.label}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             {cards.length === 0 && !seeding && (
               <p className="py-10 text-center text-sm text-muted-foreground">
                 No flashcards yet — click &quot;Sync deck&quot; above to build your deck from the curriculum.

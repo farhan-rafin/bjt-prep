@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
 import { Achievements } from "@/components/achievements";
+import { XpSummary } from "@/components/xp-summary";
 import {
   skillProgressEstimate, latestMock, findCurrentPosition, courseProgressPct,
 } from "@/lib/progress";
@@ -121,7 +122,8 @@ export default function ProgressPage() {
         </CardContent>
       </Card>
 
-      <div className="mt-6">
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <XpSummary />
         <Achievements />
       </div>
     </div>

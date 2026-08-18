@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
+import { totalXp, levelFor } from "@/components/xp-summary";
 import {
   findCurrentPosition, completedSessionsCount, TOTAL_SESSIONS, totalStudyMinutes, TOTAL_PROGRAM_HOURS,
   vocabLearnedCount, kanjiLearnedCount, latestWeeklyTest, latestMock, daysUntil, skillProgressEstimate,
@@ -15,7 +16,7 @@ import {
 import { sessionTitle, sessionObjective, sessionPlannedMinutes } from "@/lib/session-helpers";
 import { vocabTotalTarget, kanjiTotalTarget, bandForScore, type DurationOption } from "@/content";
 import { percent, formatDuration } from "@/lib/utils";
-import { ArrowRight, Flame, Sparkles } from "lucide-react";
+import { ArrowRight, Flame, Sparkles, Zap } from "lucide-react";
 
 const skillMeta = [
   { key: "listening", label: "Listening", color: "var(--color-skill-listening)" },
@@ -37,6 +38,7 @@ export default function DashboardPage() {
   const { rows: mockTests } = useUserTable("mock_tests");
   const { rows: mistakes } = useUserTable("mistakes");
   const { rows: flashcards } = useUserTable("flashcards");
+  const { rows: studyLogs } = useUserTable("study_logs");
 
   const name = profile?.name || "there";
   const targetScore = profile?.target_score ?? 420;
@@ -137,6 +139,7 @@ export default function DashboardPage() {
           hint={`Target ${targetScore}+`}
         />
         <StatTile label="Streak" value={`${streak} perfect wks`} icon={<Flame className="size-3.5 text-accent" />} />
+        <StatTile label="Level" value={`Lv. ${levelFor(totalXp(studyLogs))}`} hint={`${totalXp(studyLogs).toLocaleString()} XP`} icon={<Zap className="size-3.5 text-accent" />} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">

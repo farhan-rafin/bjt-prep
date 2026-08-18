@@ -66,6 +66,14 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
   const timer = useStudyTimer(currentStep?.minutes ?? 0);
   const accumulatedRef = React.useRef(0);
 
+  React.useEffect(() => {
+    if (timer.justFinished) {
+      toast.info("⏰ Time's up for this step — confirm below when you're ready to move on.", { duration: 6000 });
+      timer.dismissFinished();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timer.justFinished]);
+
   // Hydrate from the database once session_progress has loaded — restores step position,
   // checked tasks, notes, and elapsed minutes if the learner navigated away and came back.
   const hydratedRef = React.useRef(false);
@@ -321,7 +329,7 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
           )}
 
           <div className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface-muted p-4">
-            <span className="font-mono text-2xl tabular-nums">{formatClock(timer.remainingSec)}</span>
+            <span className={cn("font-mono text-2xl tabular-nums", timer.remainingSec === 0 && "text-danger animate-pulse")}>{formatClock(timer.remainingSec)}</span>
             <span className="text-xs text-muted-foreground">remaining of {formatDuration(currentStep.minutes)}</span>
             <div className="ml-auto flex gap-1.5">
               {!timer.running ? (
