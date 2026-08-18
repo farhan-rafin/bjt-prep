@@ -12,6 +12,7 @@ import { grammarPoints, grammarTierInfo } from "@/content";
 import { buildGrammarQuiz } from "@/lib/quiz-generators";
 import { QuizShell } from "@/components/quiz/quiz-shell";
 import { NoteDialog } from "@/components/notes/note-dialog";
+import { JapaneseAuto } from "@/components/japanese-text";
 import { Check, Bookmark, NotebookPen, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +61,7 @@ function GrammarInner() {
                         <CardContent className="p-4">
                           <div className="flex items-start justify-between gap-2">
                             <div>
-                              <p className="jp text-base font-medium">{g.pattern}</p>
+                              <p className="text-base font-medium"><JapaneseAuto text={g.pattern} /></p>
                               <p className="text-sm text-muted-foreground">{g.meaning}</p>
                             </div>
                             <button onClick={() => toggleBookmark(g.id)} aria-label="Bookmark">
@@ -68,8 +69,8 @@ function GrammarInner() {
                             </button>
                           </div>
                           {g.whenUsed && <p className="mt-2 text-sm"><span className="text-muted-foreground">When used: </span>{g.whenUsed}</p>}
-                          {g.simpleExample && <p className="jp mt-1 text-sm"><span className="text-muted-foreground not-italic">Example: </span>{g.simpleExample}</p>}
-                          <p className="jp mt-1 text-sm"><span className="text-muted-foreground">Business: </span>{g.businessExample}</p>
+                          {g.simpleExample && <p className="mt-1 text-sm"><span className="text-muted-foreground not-italic">Example: </span><JapaneseAuto text={g.simpleExample} /></p>}
+                          <p className="mt-1 text-sm"><span className="text-muted-foreground">Business: </span><JapaneseAuto text={g.businessExample} /></p>
                           {g.commonMistake && (
                             <p className="mt-1 text-sm text-warning"><span className="text-muted-foreground">Common mistake: </span>{g.commonMistake}</p>
                           )}

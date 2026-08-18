@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { Check, X, RotateCcw } from "lucide-react";
 import { useUserTable } from "@/lib/hooks/use-user-table";
+import { JapaneseAuto } from "@/components/japanese-text";
 
 export interface QuizItem {
   id: string;
@@ -114,7 +115,7 @@ export function QuizShell({
           <p className="mb-1 text-xs text-muted-foreground">
             Question {index + 1} / {items.length}
           </p>
-          <p className="jp mb-4 whitespace-pre-line text-base font-medium">{item.prompt}</p>
+          <p className="mb-4 whitespace-pre-line text-base font-medium"><JapaneseAuto text={item.prompt} /></p>
           <div className="flex flex-col gap-2">
             {item.options.map((opt, i) => {
               const isCorrect = i === item.correctIndex;
@@ -125,7 +126,7 @@ export function QuizShell({
                   disabled={submitted}
                   onClick={() => setSelected(i)}
                   className={cn(
-                    "jp flex items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm transition-colors",
+                    "flex items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm transition-colors",
                     !submitted && isSelected && "border-primary bg-primary/5",
                     !submitted && !isSelected && "border-border hover:bg-surface-muted",
                     submitted && isCorrect && "border-success bg-success/10",
@@ -133,7 +134,7 @@ export function QuizShell({
                     submitted && !isSelected && !isCorrect && "border-border opacity-60",
                   )}
                 >
-                  {opt}
+                  <JapaneseAuto text={opt} />
                   {submitted && isCorrect && <Check className="size-4 text-success" />}
                   {submitted && isSelected && !isCorrect && <X className="size-4 text-danger" />}
                 </button>

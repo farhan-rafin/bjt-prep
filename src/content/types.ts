@@ -85,6 +85,7 @@ export interface KanjiItem {
 export interface KeigoPhrase {
   id: string;
   phrase: string;
+  reading: string;
   meaning: string;
   formality: string;
   who: string;

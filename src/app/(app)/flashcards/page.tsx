@@ -14,6 +14,16 @@ import { Star, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
+// Cards are seeded with back text as "reading — meaning" (see seed-flashcards.ts) so the
+// reading can always be shown, even before the card is flipped — this app's flashcards assume
+// the learner may not know the kanji yet.
+function splitBack(back: string): [string | null, string] {
+  const sep = " — ";
+  const idx = back.indexOf(sep);
+  if (idx === -1) return [null, back];
+  return [back.slice(0, idx), back.slice(idx + sep.length)];
+}
+
 export default function FlashcardsPage() {
   const { user } = useAuth();
   const supabase = React.useMemo(() => createClient(), []);
@@ -146,14 +156,22 @@ export default function FlashcardsPage() {
                   onClick={() => setFlipped((f) => !f)}
                 >
                   <span className="absolute right-4 top-4"><Star className={cn("size-4", current.is_starred && "fill-accent text-accent")} /></span>
-                  <p className="jp text-2xl font-medium">{current.front}</p>
-                  {flipped && (
-                    <div className="mt-2 flex flex-col gap-1">
-                      <p className="jp text-lg text-primary">{current.back}</p>
-                      {current.example && <p className="jp text-sm text-muted-foreground">{current.example}</p>}
-                    </div>
-                  )}
-                  {!flipped && <p className="text-xs text-muted-foreground">Tap to show answer</p>}
+                  {(() => {
+                    const [reading, rest] = splitBack(current.back);
+                    return (
+                      <>
+                        <p className="jp text-2xl font-medium">{current.front}</p>
+                        {reading && <p className="jp text-base text-muted-foreground">{reading}</p>}
+                        {flipped && (
+                          <div className="mt-2 flex flex-col gap-1">
+                            <p className="jp text-lg text-primary">{rest}</p>
+                            {current.example && <p className="jp text-sm text-muted-foreground">{current.example}</p>}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                  {!flipped && <p className="text-xs text-muted-foreground">Tap to show meaning</p>}
                 </CardContent>
               </Card>
               {!flipped ? (

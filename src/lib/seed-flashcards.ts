@@ -92,7 +92,7 @@ export function buildAllFlashcards(currentWeek: number): SeedFlashcard[] {
       source_type: "keigo",
       source_id: k.id,
       front: k.phrase,
-      back: `${k.meaning} (${k.formality})`,
+      back: `${k.reading} — ${k.meaning} (${k.formality})`,
       example: `${k.who} → ${k.toWhom}: ${k.rightSituation}`,
       due_at: dueForWeek(weekForKeigo(k, i), currentWeek),
     });

@@ -10,6 +10,7 @@ import { useItemStatus } from "@/lib/hooks/use-item-status";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { keigoPhrases, keigoTypeInfo, keigoSampleDialogue, whoSaysThisGame } from "@/content";
 import { QuizShell, type QuizItem } from "@/components/quiz/quiz-shell";
+import { Furigana } from "@/components/japanese-text";
 import { Bookmark, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -35,7 +36,7 @@ function KeigoInner() {
 
   async function addToReview(k: (typeof keigoPhrases)[number]) {
     await upsertFlashcard(
-      { source_type: "keigo", source_id: k.id, front: k.phrase, back: `${k.meaning} (${k.formality})`, example: `${k.who} → ${k.toWhom}: ${k.rightSituation}` } as never,
+      { source_type: "keigo", source_id: k.id, front: k.phrase, back: `${k.reading} — ${k.meaning} (${k.formality})`, example: `${k.who} → ${k.toWhom}: ${k.rightSituation}` } as never,
       "user_id,source_type,source_id",
     );
     toast.success(`Added ${k.phrase} to Flashcards`);
@@ -50,9 +51,9 @@ function KeigoInner() {
         <CardContent className="p-4">
           <p className="mb-2 text-xs font-medium text-muted-foreground">Example — customer service</p>
           {keigoSampleDialogue.map((d, i) => (
-            <p key={i} className="jp text-sm">
+            <p key={i} className="text-sm">
               <span className="font-medium text-muted-foreground">{d.speaker}: </span>
-              {d.line}
+              <Furigana text={d.line} reading={d.reading} className="jp" />
             </p>
           ))}
         </CardContent>
@@ -88,6 +89,7 @@ function KeigoInner() {
                           <div className="flex items-start justify-between gap-2">
                             <div>
                               <p className="jp text-lg font-medium">{k.phrase}</p>
+                              <p className="jp text-sm text-muted-foreground">{k.reading}</p>
                               <p className="text-sm">{k.meaning}</p>
                             </div>
                             <div className="flex shrink-0 items-center gap-2">

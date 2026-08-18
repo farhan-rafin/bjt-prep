@@ -13,6 +13,7 @@ import { vocabulary, vocabCategories, vocabTotalTarget, vocabWeeklyTarget } from
 import { Bookmark, Plus, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { JapaneseAuto } from "@/components/japanese-text";
 
 function VocabularyInner() {
   const searchParams = useSearchParams();
@@ -91,7 +92,7 @@ function VocabularyInner() {
                     <p className="jp text-lg font-medium">{v.japanese}</p>
                     <p className="jp text-sm text-muted-foreground">{v.reading}</p>
                     <p className="mt-1 text-sm">{v.meaning}</p>
-                    {v.example && <p className="jp mt-1 text-xs text-muted-foreground">{v.example}</p>}
+                    {v.example && <p className="mt-1 text-xs text-muted-foreground"><JapaneseAuto text={v.example} /></p>}
                     <Badge variant="outline" className="mt-2">{v.category}</Badge>
                   </div>
                   <div className="flex shrink-0 flex-col items-end gap-1.5">

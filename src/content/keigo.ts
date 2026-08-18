@@ -2,21 +2,21 @@ import { KeigoPhrase } from "./types";
 
 // Source: Part 10 — Keigo Master Plan (high-value expressions table + telephone/customer-service sets)
 export const keigoPhrases: KeigoPhrase[] = [
-  { id: "otsukaresama", type: "teineigo", phrase: "お疲れ様です", meaning: "Standard workplace greeting/acknowledgement", formality: "Neutral-polite", who: "Any colleague", toWhom: "Anyone at work", rightSituation: "Passing a coworker, ending a task", wrongSituation: "Not to customers as a greeting" },
-  { id: "osewa", type: "kenjougo", phrase: "お世話になっております", meaning: "\"Thank you for your continued support\"", formality: "Formal", who: "You", toWhom: "Clients/外部", rightSituation: "Opening a call/email to a client", wrongSituation: "Not to close internal colleagues" },
-  { id: "shouchi", type: "kenjougo", phrase: "承知しました", meaning: "\"Understood\" (humble)", formality: "Formal", who: "You (junior)", toWhom: "Superior/client", rightSituation: "Accepting an instruction", wrongSituation: "Slightly stiff among equals" },
-  { id: "kashikomari", type: "kenjougo", phrase: "かしこまりました", meaning: "\"Certainly\" (very humble)", formality: "Very formal", who: "Staff", toWhom: "Customer", rightSituation: "Customer service acceptance", wrongSituation: "Overkill between colleagues" },
-  { id: "kakunin-itashimasu", type: "kenjougo", phrase: "確認いたします", meaning: "\"I will check\" (humble)", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "Promising to verify" },
-  { id: "shousho", type: "teineigo", phrase: "少々お待ちください", meaning: "\"Please wait a moment\"", formality: "Polite", who: "Staff", toWhom: "Customer/caller", rightSituation: "Putting someone on hold" },
-  { id: "osoreirimasu", type: "cushion", phrase: "恐れ入りますが", meaning: "\"I'm sorry to trouble you, but…\"", formality: "Formal cushion", who: "You", toWhom: "Superior/customer", rightSituation: "Before a request/interruption", wrongSituation: "Not for trivial casual asks" },
-  { id: "moushiwake", type: "kenjougo", phrase: "申し訳ございません", meaning: "\"I deeply apologise\"", formality: "Very formal", who: "You/staff", toWhom: "Customer/superior", rightSituation: "Apologising for a problem", wrongSituation: "Too heavy for tiny slips" },
-  { id: "yoroshiku", type: "teineigo", phrase: "よろしくお願いいたします", meaning: "\"Thank you in advance / regards\"", formality: "Formal", who: "You", toWhom: "Anyone senior/external", rightSituation: "Closing emails, requests" },
-  { id: "ukagaimasu", type: "kenjougo", phrase: "伺います", meaning: "Humble \"go/visit/ask\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll come to your office\"", wrongSituation: "Don't use about others" },
-  { id: "mairimasu", type: "kenjougo", phrase: "参ります", meaning: "Humble \"go/come\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll be there\"", wrongSituation: "Don't use about others" },
-  { id: "moushimasu", type: "kenjougo", phrase: "申します", meaning: "Humble \"say / my name is\"", formality: "Formal", who: "You", toWhom: "Anyone senior/external", rightSituation: "Self-intro on the phone", wrongSituation: "Don't use about others" },
-  { id: "haiken", type: "kenjougo", phrase: "拝見します", meaning: "Humble \"look at / see\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll review your document\"", wrongSituation: "Don't use about others" },
-  { id: "goran", type: "sonkeigo", phrase: "ご覧になります", meaning: "Respectful \"look at / see\"", formality: "Formal", who: "You (about them)", toWhom: "Superior/customer", rightSituation: "\"Please take a look\"", wrongSituation: "Don't use about yourself" },
-  { id: "ossharu", type: "sonkeigo", phrase: "おっしゃいます", meaning: "Respectful \"say\"", formality: "Formal", who: "You (about them)", toWhom: "Superior/customer", rightSituation: "Referring to what a client said", wrongSituation: "Don't use about yourself" },
+  { id: "otsukaresama", type: "teineigo", phrase: "お疲れ様です", reading: "おつかれさまです", meaning: "Standard workplace greeting/acknowledgement", formality: "Neutral-polite", who: "Any colleague", toWhom: "Anyone at work", rightSituation: "Passing a coworker, ending a task", wrongSituation: "Not to customers as a greeting" },
+  { id: "osewa", type: "kenjougo", phrase: "お世話になっております", reading: "おせわになっております", meaning: "\"Thank you for your continued support\"", formality: "Formal", who: "You", toWhom: "Clients/外部", rightSituation: "Opening a call/email to a client", wrongSituation: "Not to close internal colleagues" },
+  { id: "shouchi", type: "kenjougo", phrase: "承知しました", reading: "しょうちしました", meaning: "\"Understood\" (humble)", formality: "Formal", who: "You (junior)", toWhom: "Superior/client", rightSituation: "Accepting an instruction", wrongSituation: "Slightly stiff among equals" },
+  { id: "kashikomari", type: "kenjougo", phrase: "かしこまりました", reading: "かしこまりました", meaning: "\"Certainly\" (very humble)", formality: "Very formal", who: "Staff", toWhom: "Customer", rightSituation: "Customer service acceptance", wrongSituation: "Overkill between colleagues" },
+  { id: "kakunin-itashimasu", type: "kenjougo", phrase: "確認いたします", reading: "かくにんいたします", meaning: "\"I will check\" (humble)", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "Promising to verify" },
+  { id: "shousho", type: "teineigo", phrase: "少々お待ちください", reading: "しょうしょうおまちください", meaning: "\"Please wait a moment\"", formality: "Polite", who: "Staff", toWhom: "Customer/caller", rightSituation: "Putting someone on hold" },
+  { id: "osoreirimasu", type: "cushion", phrase: "恐れ入りますが", reading: "おそれいりますが", meaning: "\"I'm sorry to trouble you, but…\"", formality: "Formal cushion", who: "You", toWhom: "Superior/customer", rightSituation: "Before a request/interruption", wrongSituation: "Not for trivial casual asks" },
+  { id: "moushiwake", type: "kenjougo", phrase: "申し訳ございません", reading: "もうしわけございません", meaning: "\"I deeply apologise\"", formality: "Very formal", who: "You/staff", toWhom: "Customer/superior", rightSituation: "Apologising for a problem", wrongSituation: "Too heavy for tiny slips" },
+  { id: "yoroshiku", type: "teineigo", phrase: "よろしくお願いいたします", reading: "よろしくおねがいいたします", meaning: "\"Thank you in advance / regards\"", formality: "Formal", who: "You", toWhom: "Anyone senior/external", rightSituation: "Closing emails, requests" },
+  { id: "ukagaimasu", type: "kenjougo", phrase: "伺います", reading: "うかがいます", meaning: "Humble \"go/visit/ask\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll come to your office\"", wrongSituation: "Don't use about others" },
+  { id: "mairimasu", type: "kenjougo", phrase: "参ります", reading: "まいります", meaning: "Humble \"go/come\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll be there\"", wrongSituation: "Don't use about others" },
+  { id: "moushimasu", type: "kenjougo", phrase: "申します", reading: "もうします", meaning: "Humble \"say / my name is\"", formality: "Formal", who: "You", toWhom: "Anyone senior/external", rightSituation: "Self-intro on the phone", wrongSituation: "Don't use about others" },
+  { id: "haiken", type: "kenjougo", phrase: "拝見します", reading: "はいけんします", meaning: "Humble \"look at / see\"", formality: "Formal", who: "You", toWhom: "Superior/client", rightSituation: "\"I'll review your document\"", wrongSituation: "Don't use about others" },
+  { id: "goran", type: "sonkeigo", phrase: "ご覧になります", reading: "ごらんになります", meaning: "Respectful \"look at / see\"", formality: "Formal", who: "You (about them)", toWhom: "Superior/customer", rightSituation: "\"Please take a look\"", wrongSituation: "Don't use about yourself" },
+  { id: "ossharu", type: "sonkeigo", phrase: "おっしゃいます", reading: "おっしゃいます", meaning: "Respectful \"say\"", formality: "Formal", who: "You (about them)", toWhom: "Superior/customer", rightSituation: "Referring to what a client said", wrongSituation: "Don't use about yourself" },
 ];
 
 export const keigoTypeInfo = {
@@ -28,9 +28,9 @@ export const keigoTypeInfo = {
 
 // Source: Part 10 — Example dialogue (customer service)
 export const keigoSampleDialogue = [
-  { speaker: "客", line: "すみません、この商品はありますか。" },
-  { speaker: "店員", line: "少々お待ちください。確認いたします。" },
-  { speaker: "店員", line: "恐れ入りますが、ただいま在庫がございません。申し訳ございません。" },
+  { speaker: "客", line: "すみません、この商品はありますか。", reading: "すみません、このしょうひんはありますか。" },
+  { speaker: "店員", line: "少々お待ちください。確認いたします。", reading: "しょうしょうおまちください。かくにんいたします。" },
+  { speaker: "店員", line: "恐れ入りますが、ただいま在庫がございません。申し訳ございません。", reading: "おそれいりますが、ただいまざいこがございません。もうしわけございません。" },
 ];
 
 export interface WhoSaysThisQuestion {

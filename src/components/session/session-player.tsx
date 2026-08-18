@@ -9,29 +9,31 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { JapaneseAuto } from "@/components/japanese-text";
 import { useAuth } from "@/lib/auth-context";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { useStudyTimer, formatClock } from "@/lib/hooks/use-study-timer";
 import { buildSessionSteps, sessionTitle } from "@/lib/session-helpers";
 import { day1Blocks, day1Links, type DayNumber, type DurationOption } from "@/content";
 import { cn, formatDuration } from "@/lib/utils";
-import { Play, Pause, RotateCcw, Check, ExternalLink, ChevronRight, PartyPopper } from "lucide-react";
+import { Play, Pause, RotateCcw, Check, ExternalLink, ChevronRight, PartyPopper, Cloud, CloudCheck } from "lucide-react";
 import { toast } from "sonner";
 
 const DURATIONS: DurationOption[] = [2, 3, 4, 5];
+const AUTOSAVE_INTERVAL_MS = 5000;
 
 export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
   const searchParams = useSearchParams();
   const essential = searchParams.get("essential") === "1";
   const { user, profile } = useAuth();
-  const { rows: sessions, upsert } = useUserTable("session_progress");
+  const { rows: sessions, loading: sessionsLoading, upsert } = useUserTable("session_progress");
   const { insert: insertLog } = useUserTable("study_logs");
 
   const existing = sessions.find((s) => s.week === week && s.day === day);
   const isDay1 = week === 1 && day === 1;
 
   const [duration, setDuration] = React.useState<DurationOption>(
-    (existing?.duration_choice as DurationOption) ?? (profile?.session_duration as DurationOption) ?? 3,
+    (profile?.session_duration as DurationOption) ?? 3,
   );
   const started = !!existing && (existing.actual_minutes ?? 0) > 0;
 
@@ -54,32 +56,100 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
 
   const [stepIndex, setStepIndex] = React.useState(0);
   const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(new Set());
-  const [checkedTasks, setCheckedTasks] = React.useState<Set<string>>(
-    new Set(existing?.completed_tasks ?? []),
-  );
-  const [notes, setNotes] = React.useState(existing?.notes ?? "");
+  const [checkedTasks, setCheckedTasks] = React.useState<Set<string>>(new Set());
+  const [notes, setNotes] = React.useState("");
   const [confirmOpen, setConfirmOpen] = React.useState(false);
   const [celebrate, setCelebrate] = React.useState(false);
+  const [saveState, setSaveState] = React.useState<"idle" | "saving" | "saved">("idle");
 
   const currentStep = steps[stepIndex];
   const timer = useStudyTimer(currentStep?.minutes ?? 0);
-  const accumulatedRef = React.useRef(existing?.actual_minutes ?? 0);
+  const accumulatedRef = React.useRef(0);
 
-  async function persist(patch: Partial<Parameters<typeof upsert>[0]>) {
-    await upsert(
-      {
-        week,
-        day,
-        status: "in_progress",
-        duration_choice: duration,
-        planned_minutes: steps.reduce((s, x) => s + x.minutes, 0),
-        completed_tasks: Array.from(checkedTasks),
-        notes,
-        started_at: existing?.started_at ?? new Date().toISOString(),
-        ...patch,
-      } as never,
-      "user_id,week,day",
-    );
+  // Hydrate from the database once session_progress has loaded — restores step position,
+  // checked tasks, notes, and elapsed minutes if the learner navigated away and came back.
+  const hydratedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (sessionsLoading || hydratedRef.current) return;
+    hydratedRef.current = true;
+    if (existing) {
+      if (existing.duration_choice) setDuration(existing.duration_choice as DurationOption);
+      const savedIndex = Math.min(existing.current_step_index ?? 0, Math.max(0, steps.length - 1));
+      setStepIndex(savedIndex);
+      setCompletedSteps(new Set(Array.from({ length: savedIndex }, (_, i) => i)));
+      setCheckedTasks(new Set(existing.completed_tasks ?? []));
+      setNotes(existing.notes ?? "");
+      accumulatedRef.current = existing.actual_minutes ?? 0;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionsLoading]);
+
+  // Keep latest values in refs so the autosave heartbeat and unload handler always read
+  // current state without needing to be recreated on every keystroke/toggle.
+  const latestRef = React.useRef({ checkedTasks, notes, stepIndex, duration });
+  React.useEffect(() => {
+    latestRef.current = { checkedTasks, notes, stepIndex, duration };
+  }, [checkedTasks, notes, stepIndex, duration]);
+
+  const persist = React.useCallback(
+    async (patch: Record<string, unknown>) => {
+      setSaveState("saving");
+      const { checkedTasks: ct, notes: n, stepIndex: si, duration: d } = latestRef.current;
+      await upsert(
+        {
+          week,
+          day,
+          status: "in_progress",
+          duration_choice: d,
+          current_step_index: si,
+          planned_minutes: steps.reduce((s, x) => s + x.minutes, 0),
+          completed_tasks: Array.from(ct),
+          notes: n,
+          started_at: existing?.started_at ?? new Date().toISOString(),
+          ...patch,
+        } as never,
+        "user_id,week,day",
+      );
+      setSaveState("saved");
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [week, day, existing?.started_at, steps.length],
+  );
+
+  // Heartbeat autosave: every few seconds, persist wherever things stand (checklist, notes,
+  // current step, and time spent so far on the in-progress step) so nothing is lost by
+  // navigating away mid-step.
+  React.useEffect(() => {
+    if (!hydratedRef.current) return;
+    const id = setInterval(() => {
+      const liveMinutes = accumulatedRef.current + Math.round(timer.elapsedSec / 60);
+      persist({ actual_minutes: liveMinutes });
+    }, AUTOSAVE_INTERVAL_MS);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [persist, timer.elapsedSec]);
+
+  // Best-effort save on tab hide / unmount.
+  React.useEffect(() => {
+    function onVisibility() {
+      if (document.visibilityState === "hidden") {
+        const liveMinutes = accumulatedRef.current + Math.round(timer.elapsedSec / 60);
+        persist({ actual_minutes: liveMinutes });
+      }
+    }
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      onVisibility();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [persist]);
+
+  // Debounced save whenever the checklist or notes change (in addition to the heartbeat).
+  const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  function scheduleAutosave(delayMs = 600) {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => persist({}), delayMs);
   }
 
   async function markStepDone() {
@@ -92,12 +162,14 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
       currentStep.checklist.forEach((c) => next.add(c));
       return next;
     });
-    await persist({ actual_minutes: accumulatedRef.current });
 
     if (stepIndex < steps.length - 1) {
-      setStepIndex((i) => i + 1);
+      const nextIndex = stepIndex + 1;
+      setStepIndex(nextIndex);
       timer.reset();
+      await persist({ actual_minutes: accumulatedRef.current, current_step_index: nextIndex });
     } else {
+      await persist({ actual_minutes: accumulatedRef.current });
       setConfirmOpen(true);
     }
   }
@@ -177,22 +249,31 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
-      <div className="mb-6">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Week {week} · Day {day}
-        </p>
-        <h1 className="text-2xl font-semibold">{sessionTitle(week, day)}</h1>
-        <div className="mt-3 flex items-center gap-1.5">
-          {steps.map((_, i) => (
-            <span
-              key={i}
-              className={cn(
-                "h-2 flex-1 rounded-full transition-colors",
-                completedSteps.has(i) ? "bg-success" : i === stepIndex ? "bg-primary" : "bg-surface-muted",
-              )}
-            />
-          ))}
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Week {week} · Day {day}
+          </p>
+          <h1 className="text-2xl font-semibold">{sessionTitle(week, day)}</h1>
         </div>
+        <span className="mt-1 flex shrink-0 items-center gap-1 text-xs text-muted-foreground" aria-live="polite">
+          {saveState === "saving" ? (
+            <><Cloud className="size-3.5 animate-pulse" /> Saving…</>
+          ) : saveState === "saved" ? (
+            <><CloudCheck className="size-3.5 text-success" /> Saved</>
+          ) : null}
+        </span>
+      </div>
+      <div className="-mt-4 mb-6 flex items-center gap-1.5">
+        {steps.map((_, i) => (
+          <span
+            key={i}
+            className={cn(
+              "h-2 flex-1 rounded-full transition-colors",
+              completedSteps.has(i) ? "bg-success" : i === stepIndex ? "bg-primary" : "bg-surface-muted",
+            )}
+          />
+        ))}
       </div>
 
       {!started && (
@@ -201,7 +282,10 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
           {DURATIONS.map((d) => (
             <button
               key={d}
-              onClick={() => setDuration(d)}
+              onClick={() => {
+                setDuration(d);
+                scheduleAutosave(0);
+              }}
               className={cn(
                 "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
                 duration === d ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-surface-muted",
@@ -221,7 +305,9 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
             </h2>
             <Badge variant="outline">{formatDuration(currentStep.minutes)}</Badge>
           </div>
-          <p className="jp whitespace-pre-line text-sm leading-relaxed text-foreground/90">{currentStep.description}</p>
+          <p className="whitespace-pre-line text-sm leading-relaxed text-foreground/90">
+            <JapaneseAuto text={currentStep.description} />
+          </p>
 
           {isDay1 && stepIndex === 0 && (
             <div className="mt-4 flex flex-col gap-1.5 rounded-lg border border-border bg-surface-muted p-3">
@@ -259,14 +345,15 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
               <label key={c} className="flex items-center gap-2 py-1 text-sm">
                 <Checkbox
                   checked={checkedTasks.has(c)}
-                  onCheckedChange={(v) =>
+                  onCheckedChange={(v) => {
                     setCheckedTasks((prev) => {
                       const next = new Set(prev);
                       if (v) next.add(c);
                       else next.delete(c);
                       return next;
-                    })
-                  }
+                    });
+                    scheduleAutosave(300);
+                  }}
                 />
                 {c}
               </label>
@@ -281,6 +368,7 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
               value={notes}
               onChange={(e) => {
                 setNotes(e.target.value);
+                scheduleAutosave();
               }}
               onBlur={() => persist({})}
             />

@@ -189,17 +189,17 @@ export type Database = {
       session_progress: {
         Row: {
           actual_minutes: number | null; completed_at: string | null; completed_tasks: string[] | null; day: number
-          duration_choice: number | null; id: string; notes: string | null; planned_minutes: number | null
+          duration_choice: number | null; current_step_index: number | null; id: string; notes: string | null; planned_minutes: number | null
           started_at: string | null; status: string; updated_at: string | null; user_id: string; week: number; xp_earned: number | null
         }
         Insert: {
           actual_minutes?: number | null; completed_at?: string | null; completed_tasks?: string[] | null; day: number
-          duration_choice?: number | null; id?: string; notes?: string | null; planned_minutes?: number | null
+          duration_choice?: number | null; current_step_index?: number | null; id?: string; notes?: string | null; planned_minutes?: number | null
           started_at?: string | null; status?: string; updated_at?: string | null; user_id: string; week: number; xp_earned?: number | null
         }
         Update: {
           actual_minutes?: number | null; completed_at?: string | null; completed_tasks?: string[] | null; day?: number
-          duration_choice?: number | null; id?: string; notes?: string | null; planned_minutes?: number | null
+          duration_choice?: number | null; current_step_index?: number | null; id?: string; notes?: string | null; planned_minutes?: number | null
           started_at?: string | null; status?: string; updated_at?: string | null; user_id?: string; week?: number; xp_earned?: number | null
         }
         Relationships: []

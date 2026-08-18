@@ -9,6 +9,7 @@ import { useUserTable } from "@/lib/hooks/use-user-table";
 import { roadmap, monthGoals, daySpineLong } from "@/content";
 import { weekStatus } from "@/lib/progress";
 import { sessionTitle } from "@/lib/session-helpers";
+import { JapaneseAuto } from "@/components/japanese-text";
 import { cn } from "@/lib/utils";
 import {
   SpellCheck, MessageSquareQuote, Headphones, BookOpen, BookMarked, Type, Target, ClipboardCheck, Briefcase,
@@ -57,7 +58,7 @@ export default function WeekDetailPage() {
                 </span>
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">{c.label}</p>
-                  <p className="jp mt-0.5 text-sm">{w[c.key]}</p>
+                  <p className="mt-0.5 text-sm"><JapaneseAuto text={w[c.key]} /></p>
                 </div>
               </CardContent>
             </Card>

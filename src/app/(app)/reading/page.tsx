@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { readingPassages } from "@/content";
 import { formatClock, useStudyTimer } from "@/lib/hooks/use-study-timer";
+import { JapaneseAuto } from "@/components/japanese-text";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +76,7 @@ export default function ReadingPage() {
             {phase === "question" && (
               <>
                 <p className="mb-3 text-xs font-medium uppercase text-muted-foreground">Read the question first</p>
-                <p className="jp mb-6 text-lg font-medium">{selected.question}</p>
+                <p className="mb-6 text-lg font-medium"><JapaneseAuto text={selected.question} /></p>
                 <Button onClick={beginReading}>
                   <Eye className="size-4" /> Start Timed Reading
                 </Button>
@@ -87,16 +88,17 @@ export default function ReadingPage() {
                   <span className="font-mono text-xl tabular-nums">{formatClock(timer.elapsedSec)}</span>
                   <Badge variant="outline">Question: {selected.question}</Badge>
                 </div>
-                <p className="jp mb-6 whitespace-pre-line text-base leading-relaxed">{selected.text}</p>
-                <p className="mb-2 text-sm font-medium">{selected.question}</p>
+                <p className="jp mb-1 whitespace-pre-line text-base leading-relaxed">{selected.text}</p>
+                <p className="jp mb-6 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{selected.textReading}</p>
+                <p className="mb-2 text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
                 <div className="flex flex-col gap-2">
                   {selected.options.map((opt, i) => (
                     <button
                       key={i}
                       onClick={() => submitAnswer(i)}
-                      className="jp rounded-lg border border-border px-4 py-2.5 text-left text-sm hover:bg-surface-muted"
+                      className="rounded-lg border border-border px-4 py-2.5 text-left text-sm hover:bg-surface-muted"
                     >
-                      {opt}
+                      <JapaneseAuto text={opt} />
                     </button>
                   ))}
                 </div>

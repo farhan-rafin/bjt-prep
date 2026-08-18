@@ -119,6 +119,18 @@ body {
   font-feature-settings: "palt";
 }
 
+ruby {
+  ruby-position: over;
+  margin: 0 0.05em;
+}
+rt {
+  user-select: none;
+  line-height: 1.4;
+}
+.jp:has(ruby) {
+  line-height: 2.1;
+}
+
 ::selection {
   background: color-mix(in srgb, var(--primary) 25%, transparent);
 }
