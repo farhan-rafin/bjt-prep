@@ -18,3 +18,4 @@ export * from "./listening-items";
 export * from "./expression-items";
 export * from "./keigo-verbs";
 export * from "./integrated-items";
+export * from "./visual-items";

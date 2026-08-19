@@ -8,6 +8,7 @@ import { youtubeResources, bjtKeyFacts } from "@/content";
 import { IntensiveListeningWorkflow } from "@/components/listening/intensive-workflow";
 import { ShadowingMode } from "@/components/listening/shadowing-mode";
 import { ListeningRunner } from "@/components/listening/listening-runner";
+import { VisualRunner } from "@/components/listening/visual-runner";
 import { ExternalLink } from "lucide-react";
 
 function ListeningInner() {
@@ -24,6 +25,7 @@ function ListeningInner() {
       <Tabs defaultValue={defaultTab} className="mt-5">
         <TabsList>
           <TabsTrigger value="practice">Practice</TabsTrigger>
+          <TabsTrigger value="visual">With Visuals</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
           <TabsTrigger value="workflow">Intensive Method</TabsTrigger>
           <TabsTrigger value="shadowing">Shadowing</TabsTrigger>
@@ -34,6 +36,13 @@ function ListeningInner() {
             Part I question types — audio plays first and the transcript stays hidden until you answer.
           </p>
           <ListeningRunner />
+        </TabsContent>
+        <TabsContent value="visual">
+          <p className="mb-4 text-sm text-muted-foreground">
+            <Badge variant="accent" className="mr-1">PRACTICE</Badge>
+            Part II 場面把握 — the answer has to satisfy the notice AND the audio. Check the small print.
+          </p>
+          <VisualRunner />
         </TabsContent>
         <TabsContent value="resources">
           <div className="flex flex-col gap-2">

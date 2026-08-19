@@ -1,6 +1,6 @@
 import {
   roadmap, vocabulary, kanjiItems, grammarPoints, whoSaysThisGame, keigoVerbPairs,
-  listeningItems, expressionItems, readingPassages, combinedItems, integratedItems, scenarioQuizItems,
+  listeningItems, visualItems, expressionItems, readingPassages, combinedItems, integratedItems, scenarioQuizItems,
   practiceQuestions, clozeQuestions,
 } from "@/content";
 import type { Tables } from "@/lib/supabase/database.types";
@@ -159,7 +159,7 @@ export function masteryEstimate(s: MasterySources): Record<
   const bjtDone = distinctCorrect(s.attempts, ["bjt_practice", "grammar_cloze"]);
 
   return {
-    listening: mk(distinctCorrect(s.attempts, ["listening"]), listeningItems.length),
+    listening: mk(distinctCorrect(s.attempts, ["listening", "visual_item"]), listeningItems.length + visualItems.length),
     reading: mk(readingDone, readingTotal),
     vocab: mk(learnedCount(s.vocabStatus), vocabulary.length),
     kanji: mk(learnedCount(s.kanjiStatus), kanjiItems.length),
