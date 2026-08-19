@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { KeigoVerbConverter } from "@/components/keigo/verb-converter";
+import { KeigoVerbTable } from "@/components/keigo/verb-table";
 import { useItemStatus } from "@/lib/hooks/use-item-status";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { keigoPhrases, keigoTypeInfo, keigoSampleDialogue, whoSaysThisGame } from "@/content";
@@ -69,6 +71,8 @@ function KeigoInner() {
       <Tabs defaultValue="library" className="mt-5">
         <TabsList>
           <TabsTrigger value="library">Phrases</TabsTrigger>
+          <TabsTrigger value="verbs">Verb Table</TabsTrigger>
+          <TabsTrigger value="convert">Convert Drill</TabsTrigger>
           <TabsTrigger value="game">Who Says This?</TabsTrigger>
         </TabsList>
         <TabsContent value="library">
@@ -125,6 +129,16 @@ function KeigoInner() {
               </section>
             );
           })}
+        </TabsContent>
+        <TabsContent value="verbs">
+          <KeigoVerbTable />
+        </TabsContent>
+        <TabsContent value="convert">
+          <p className="mb-4 text-sm text-muted-foreground">
+            You get the plain verb and a target register. Pick the right form — wrong-direction
+            forms are deliberately among the options.
+          </p>
+          <KeigoVerbConverter />
         </TabsContent>
         <TabsContent value="game">
           <p className="mb-4 text-sm text-muted-foreground">Who would most appropriately say this?</p>

@@ -1,5 +1,5 @@
 import {
-  roadmap, vocabulary, kanjiItems, grammarPoints, whoSaysThisGame,
+  roadmap, vocabulary, kanjiItems, grammarPoints, whoSaysThisGame, keigoVerbPairs,
   listeningItems, expressionItems, readingPassages, combinedItems, scenarioQuizItems,
   practiceQuestions, clozeQuestions,
 } from "@/content";
@@ -120,6 +120,12 @@ export function distinctCorrect(attempts: QuizAttemptRow[], quizTypes: string[])
   return seen.size;
 }
 
+/** Each verb yields one conversion question per register it actually has a form for. */
+const keigoConvertibleCount = keigoVerbPairs.reduce(
+  (n, p) => n + (p.sonkeigo ? 1 : 0) + (p.kenjougo ? 1 : 0),
+  0,
+);
+
 function learnedCount(rows: { status: string | null }[]) {
   return rows.filter((r) => r.status === "learned").length;
 }
@@ -158,7 +164,10 @@ export function masteryEstimate(s: MasterySources): Record<
     vocab: mk(learnedCount(s.vocabStatus), vocabulary.length),
     kanji: mk(learnedCount(s.kanjiStatus), kanjiItems.length),
     grammar: mk(learnedCount(s.grammarStatus), grammarPoints.length),
-    keigo: mk(distinctCorrect(s.attempts, ["keigo_who_says"]), whoSaysThisGame.length),
+    keigo: mk(
+      distinctCorrect(s.attempts, ["keigo_who_says", "keigo_verbs"]),
+      whoSaysThisGame.length + keigoConvertibleCount,
+    ),
     business: mk(distinctCorrect(s.attempts, ["scenario"]), scenarioQuizItems.length),
     bjt: mk(bjtDone, bjtTotal),
   };
