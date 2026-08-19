@@ -30,5 +30,24 @@ export function useSpeech() {
     setSpeaking(false);
   }, []);
 
-  return { speak, stop, speaking, supported };
+  /** Speaks several lines back-to-back with a short gap, the way a dialogue would play on the real exam. */
+  const speakSequence = React.useCallback(async (texts: string[], opts?: { rate?: number; gapMs?: number }) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    setSpeaking(true);
+    for (const text of texts) {
+      await new Promise<void>((resolve) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "ja-JP";
+        utterance.rate = opts?.rate ?? 0.9;
+        utterance.onend = () => resolve();
+        utterance.onerror = () => resolve();
+        window.speechSynthesis.speak(utterance);
+      });
+      await new Promise((r) => setTimeout(r, opts?.gapMs ?? 400));
+    }
+    setSpeaking(false);
+  }, []);
+
+  return { speak, speakSequence, stop, speaking, supported };
 }

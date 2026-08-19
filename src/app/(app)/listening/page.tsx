@@ -7,11 +7,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { youtubeResources, bjtKeyFacts } from "@/content";
 import { IntensiveListeningWorkflow } from "@/components/listening/intensive-workflow";
 import { ShadowingMode } from "@/components/listening/shadowing-mode";
+import { ListeningRunner } from "@/components/listening/listening-runner";
 import { ExternalLink } from "lucide-react";
 
 function ListeningInner() {
   const searchParams = useSearchParams();
-  const defaultTab = searchParams.get("shadow") ? "shadowing" : "resources";
+  const defaultTab = searchParams.get("shadow") ? "shadowing" : "practice";
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
@@ -22,10 +23,18 @@ function ListeningInner() {
 
       <Tabs defaultValue={defaultTab} className="mt-5">
         <TabsList>
+          <TabsTrigger value="practice">Practice</TabsTrigger>
           <TabsTrigger value="resources">Resources</TabsTrigger>
           <TabsTrigger value="workflow">Intensive Method</TabsTrigger>
           <TabsTrigger value="shadowing">Shadowing</TabsTrigger>
         </TabsList>
+        <TabsContent value="practice">
+          <p className="mb-4 text-sm text-muted-foreground">
+            <Badge variant="accent" className="mr-1">PRACTICE</Badge>
+            Part I question types — audio plays first and the transcript stays hidden until you answer.
+          </p>
+          <ListeningRunner />
+        </TabsContent>
         <TabsContent value="resources">
           <div className="flex flex-col gap-2">
             <Card className="border-primary/30 bg-primary/5">
