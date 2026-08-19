@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { useAuth } from "@/lib/auth-context";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
-import { TimedMockRunner } from "@/components/mock-exam/timed-mock-runner";
-import { mockLengthConfig, type MockLength } from "@/lib/mock-exam";
+import { TimedMockRunner, type MockScope } from "@/components/mock-exam/timed-mock-runner";
+import { sectionSpecs, TOTAL_MOCK_QUESTIONS, TOTAL_MOCK_MINUTES } from "@/lib/mock-exam";
 import { Plus, Timer } from "lucide-react";
 import { toast } from "sonner";
 
@@ -21,13 +21,11 @@ const scoreTypes = [
   { value: "actual_bjt", label: "Actual BJT score" },
 ];
 
-const mockLengths = Object.keys(mockLengthConfig) as MockLength[];
-
 export default function MockTestsPage() {
   const { profile } = useAuth();
   const { rows: mocks, insert } = useUserTable("mock_tests");
   const [open, setOpen] = React.useState(false);
-  const [activeMockLength, setActiveMockLength] = React.useState<MockLength | null>(null);
+  const [activeScope, setActiveScope] = React.useState<MockScope | null>(null);
   const [form, setForm] = React.useState({
     test_date: new Date().toISOString().slice(0, 10),
     score_type: "estimated_bjt",
@@ -58,10 +56,10 @@ export default function MockTestsPage() {
     toast.success("Mock test recorded");
   }
 
-  if (activeMockLength) {
+  if (activeScope !== null) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-6 lg:py-10">
-        <TimedMockRunner length={activeMockLength} onExit={() => setActiveMockLength(null)} />
+        <TimedMockRunner scope={activeScope} onExit={() => setActiveScope(null)} />
       </div>
     );
   }
@@ -77,22 +75,39 @@ export default function MockTestsPage() {
       <p className="mt-1 text-sm text-muted-foreground">Target: {profile?.target_score ?? 420}+</p>
 
       <Card className="mt-5">
-        <CardHeader><CardTitle>Start a Timed Mock</CardTitle></CardHeader>
-        <CardContent className="grid gap-2 pt-2 sm:grid-cols-3">
-          {mockLengths.map((len) => {
-            const cfg = mockLengthConfig[len];
-            return (
+        <CardHeader><CardTitle>Sit a Mock</CardTitle></CardHeader>
+        <CardContent className="pt-2">
+          <p className="mb-3 text-sm text-muted-foreground">
+            Real exam conditions: no furigana, no translations, no feedback until you finish.
+            Sit a single section when you only have half an hour, or the full paper when you don't.
+          </p>
+          <button
+            onClick={() => setActiveScope("full")}
+            className="mb-2 flex w-full items-center gap-3 rounded-lg border border-primary/40 bg-primary/5 p-4 text-left transition-colors hover:bg-primary/10"
+          >
+            <Timer className="size-5 shrink-0 text-primary" />
+            <span>
+              <span className="block font-medium">Full mock</span>
+              <span className="block text-xs text-muted-foreground">
+                {TOTAL_MOCK_QUESTIONS} questions · {TOTAL_MOCK_MINUTES} min · all three sections
+              </span>
+            </span>
+          </button>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {sectionSpecs.map((spec) => (
               <button
-                key={len}
-                onClick={() => setActiveMockLength(len)}
-                className="flex flex-col items-start gap-1 rounded-lg border border-border p-4 text-left transition-colors hover:bg-surface-muted"
+                key={spec.section}
+                onClick={() => setActiveScope(spec.section)}
+                className="flex flex-col items-start gap-0.5 rounded-lg border border-border p-4 text-left transition-colors hover:bg-surface-muted"
               >
-                <Timer className="size-4 text-primary" />
-                <span className="font-medium capitalize">{len}</span>
-                <span className="text-xs text-muted-foreground">{cfg.label}</span>
+                <span className="jp font-medium">{spec.ja}</span>
+                <span className="text-xs text-muted-foreground">{spec.en}</span>
+                <span className="text-xs text-muted-foreground">
+                  {spec.types.reduce((n, t) => n + t.count, 0)} Q · {spec.minutes} min
+                </span>
               </button>
-            );
-          })}
+            ))}
+          </div>
         </CardContent>
       </Card>
 
