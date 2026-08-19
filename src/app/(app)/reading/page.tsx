@@ -10,6 +10,7 @@ import { formatClock, useStudyTimer } from "@/lib/hooks/use-study-timer";
 import { JapaneseAuto } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { CombinedItemRunner } from "@/components/reading/combined-item-runner";
+import { ExpressionRunner } from "@/components/reading/expression-runner";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -152,10 +153,17 @@ export default function ReadingPage() {
       <Tabs defaultValue="timed" className="mt-5">
         <TabsList>
           <TabsTrigger value="timed">Timed Passages</TabsTrigger>
+          <TabsTrigger value="expression">Expression Reading</TabsTrigger>
           <TabsTrigger value="combined">Part II Practice</TabsTrigger>
         </TabsList>
         <TabsContent value="timed">
           <TimedPassages />
+        </TabsContent>
+        <TabsContent value="expression">
+          <p className="mb-4 text-sm text-muted-foreground">
+            表現読解 — what the words literally say vs what they actually mean.
+          </p>
+          <ExpressionRunner />
         </TabsContent>
         <TabsContent value="combined">
           <CombinedItemRunner />

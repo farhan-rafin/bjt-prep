@@ -15,3 +15,4 @@ export * from "./reading-passages";
 export * from "./combined-items";
 export * from "./cloze-questions";
 export * from "./listening-items";
+export * from "./expression-items";
