@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { readingPassages } from "@/content";
 import { formatClock, useStudyTimer } from "@/lib/hooks/use-study-timer";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { JapaneseAuto, FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { CombinedItemRunner } from "@/components/reading/combined-item-runner";
 import { ExpressionRunner } from "@/components/reading/expression-runner";
@@ -94,10 +94,10 @@ function TimedPassages() {
                   <Badge variant="outline">Question: {selected.question}</Badge>
                 </div>
                 <div className="mb-1 flex items-start gap-1.5">
-                  <p className="jp whitespace-pre-line text-base leading-relaxed">{selected.text}</p>
+                  <p className="jp whitespace-pre-line text-base leading-relaxed"><FuriganaSentence text={selected.text} reading={selected.textReading} /></p>
                   <SpeakButton text={selected.text} rate={0.85} />
                 </div>
-                <p className="jp mb-6 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">{selected.textReading}</p>
+                
                 <p className="mb-2 text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
                 <div className="flex flex-col gap-2">
                   {selected.options.map((opt, i) => (
