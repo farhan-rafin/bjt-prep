@@ -1,6 +1,6 @@
 import {
   roadmap, vocabulary, kanjiItems, grammarPoints, whoSaysThisGame, keigoVerbPairs,
-  listeningItems, visualItems, expressionItems, readingPassages, combinedItems, integratedItems, scenarioQuizItems,
+  listeningItems, visualItems, expressionItems, readingPassages, longPassages, combinedItems, integratedItems, scenarioQuizItems,
   practiceQuestions, clozeQuestions,
 } from "@/content";
 import type { Tables } from "@/lib/supabase/database.types";
@@ -152,7 +152,8 @@ export function masteryEstimate(s: MasterySources): Record<
     done, total, pct: percent(done, total),
   });
 
-  const readingTotal = expressionItems.length + readingPassages.length + combinedItems.length + integratedItems.length;
+  const longPassageQuestions = longPassages.reduce((n, p) => n + p.questions.length, 0);
+  const readingTotal = expressionItems.length + readingPassages.length + longPassageQuestions + combinedItems.length + integratedItems.length;
   const readingDone = distinctCorrect(s.attempts, ["expression_reading", "reading_passage", "combined_item", "integrated_item"]);
 
   const bjtTotal = practiceQuestions.length + clozeQuestions.length;

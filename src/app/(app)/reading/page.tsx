@@ -12,6 +12,7 @@ import { SpeakButton } from "@/components/speak-button";
 import { CombinedItemRunner } from "@/components/reading/combined-item-runner";
 import { ExpressionRunner } from "@/components/reading/expression-runner";
 import { IntegratedRunner } from "@/components/reading/integrated-runner";
+import { LongPassageRunner } from "@/components/reading/long-passage-runner";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -154,12 +155,16 @@ export default function ReadingPage() {
       <Tabs defaultValue="timed" className="mt-5">
         <TabsList>
           <TabsTrigger value="timed">Timed Passages</TabsTrigger>
+          <TabsTrigger value="long">総合読解</TabsTrigger>
           <TabsTrigger value="expression">Expression Reading</TabsTrigger>
           <TabsTrigger value="combined">資料聴読解</TabsTrigger>
           <TabsTrigger value="integrated">総合聴読解</TabsTrigger>
         </TabsList>
         <TabsContent value="timed">
           <TimedPassages />
+        </TabsContent>
+        <TabsContent value="long">
+          <LongPassageRunner />
         </TabsContent>
         <TabsContent value="expression">
           <p className="mb-4 text-sm text-muted-foreground">

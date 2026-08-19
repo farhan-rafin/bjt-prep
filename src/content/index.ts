@@ -20,3 +20,4 @@ export * from "./keigo-verbs";
 export * from "./integrated-items";
 export * from "./visual-items";
 export * from "./furigana-extras";
+export * from "./long-passages";
