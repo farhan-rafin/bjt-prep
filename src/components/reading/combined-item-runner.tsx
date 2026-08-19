@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { SpeakButton } from "@/components/speak-button";
 import { JapaneseAuto } from "@/components/japanese-text";
 import { combinedItems } from "@/content";
+import { useUserTable } from "@/lib/hooks/use-user-table";
 import { cn } from "@/lib/utils";
 import { Check, X, Volume2 } from "lucide-react";
 
@@ -13,6 +14,31 @@ export function CombinedItemRunner() {
   const [selected, setSelected] = React.useState<(typeof combinedItems)[number] | null>(null);
   const [heardAudio, setHeardAudio] = React.useState(false);
   const [answer, setAnswer] = React.useState<number | null>(null);
+  const { insert: insertAttempt } = useUserTable("quiz_attempts");
+  const { insert: insertMistake } = useUserTable("mistakes");
+
+  async function choose(i: number) {
+    if (!selected || answer !== null) return;
+    setAnswer(i);
+    const isCorrect = i === selected.correctIndex;
+    await insertAttempt({
+      quiz_type: "combined_item",
+      quiz_id: "joudai",
+      question_id: selected.id,
+      is_correct: isCorrect,
+      category: "Information Listening & Reading",
+    } as never);
+    if (!isCorrect) {
+      await insertMistake({
+        question_type: "情報聴解 — Part II combined",
+        question: selected.question,
+        my_answer: selected.options[i],
+        correct_answer: selected.options[selected.correctIndex],
+        error_category: "Listening & Reading",
+        why_wrong: selected.explanation,
+      } as never);
+    }
+  }
 
   function start(item: (typeof combinedItems)[number]) {
     setSelected(item);
@@ -90,7 +116,7 @@ export function CombinedItemRunner() {
                   <button
                     key={i}
                     disabled={answer !== null}
-                    onClick={() => setAnswer(i)}
+                    onClick={() => choose(i)}
                     className={cn(
                       "flex items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm transition-colors",
                       answer === null && "border-border hover:bg-surface-muted",

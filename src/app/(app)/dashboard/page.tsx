@@ -9,12 +9,13 @@ import { Button } from "@/components/ui/button";
 import { BjtScoreTracker } from "@/components/bjt-score-tracker";
 import { totalXp, levelFor } from "@/components/xp-summary";
 import {
-  findCurrentPosition, completedSessionsCount, TOTAL_SESSIONS, totalStudyMinutes, TOTAL_PROGRAM_HOURS,
-  vocabLearnedCount, kanjiLearnedCount, latestWeeklyTest, latestMock, daysUntil, skillProgressEstimate,
+  findCurrentPosition, completedSessionsCount, TOTAL_SESSIONS,
+  vocabLearnedCount, kanjiLearnedCount, latestWeeklyTest, latestMock, daysUntil,
+  masteryEstimate, masteryProgressPct, totalItemsMastered, totalItemsAvailable,
   isFinalStretch,
 } from "@/lib/progress";
 import { sessionTitle, sessionObjective, sessionPlannedMinutes } from "@/lib/session-helpers";
-import { vocabTotalTarget, kanjiTotalTarget, bandForScore, type DurationOption } from "@/content";
+import { vocabulary, kanjiItems, bandForScore, type DurationOption } from "@/content";
 import { percent, formatDuration } from "@/lib/utils";
 import { ArrowRight, Flame, Sparkles, Zap } from "lucide-react";
 
@@ -39,6 +40,8 @@ export default function DashboardPage() {
   const { rows: mistakes } = useUserTable("mistakes");
   const { rows: flashcards } = useUserTable("flashcards");
   const { rows: studyLogs } = useUserTable("study_logs");
+  const { rows: grammarStatus } = useUserTable("grammar_status");
+  const { rows: attempts } = useUserTable("quiz_attempts");
 
   const name = profile?.name || "there";
   const targetScore = profile?.target_score ?? 420;
@@ -52,13 +55,13 @@ export default function DashboardPage() {
   const remaining = Math.max(0, plannedMinutes - actualMinutes);
 
   const completed = completedSessionsCount(sessions);
-  const coursePct = percent(completed, TOTAL_SESSIONS);
-  const studyHours = Math.round((totalStudyMinutes(sessions) / 60) * 10) / 10;
+  const mastery = masteryEstimate({ vocabStatus, kanjiStatus, grammarStatus, attempts });
+  const skills = mastery;
+  const coursePct = masteryProgressPct(mastery);
   const vocabLearned = vocabLearnedCount(vocabStatus);
   const kanjiLearned = kanjiLearnedCount(kanjiStatus);
   const latestTest = latestWeeklyTest(weeklyTests);
   const latestMockScore = latestMock(mockTests);
-  const skills = skillProgressEstimate(sessions, vocabStatus, kanjiStatus);
   const examDays = daysUntil(profile?.exam_date);
   const dueFlashcards = flashcards.filter((f) => f.due_at && new Date(f.due_at) <= new Date()).length;
   const unresolvedMistakes = mistakes.filter((m) => !m.is_resolved).length;
@@ -71,7 +74,7 @@ export default function DashboardPage() {
     else break;
   }
 
-  const weakestSkill = skillMeta.reduce((min, s) => (skills[s.key] < skills[min.key] ? s : min), skillMeta[0]);
+  const weakestSkill = skillMeta.reduce((min, s) => (skills[s.key].pct < skills[min.key].pct ? s : min), skillMeta[0]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 lg:px-8 lg:py-8">
@@ -123,11 +126,10 @@ export default function DashboardPage() {
       </Card>
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        <StatTile label="Course progress" value={`${coursePct}%`} />
+        <StatTile label="Overall mastery" value={`${coursePct}%`} hint={`${totalItemsMastered(mastery)} / ${totalItemsAvailable(mastery)} items`} />
         <StatTile label="Study sessions" value={`${completed} / ${TOTAL_SESSIONS}`} />
-        <StatTile label="Study time" value={`${studyHours} / ~${TOTAL_PROGRAM_HOURS} hrs`} />
-        <StatTile label="Vocabulary" value={`${vocabLearned} / ${vocabTotalTarget}`} />
-        <StatTile label="Kanji" value={`${kanjiLearned} / ${kanjiTotalTarget}`} />
+        <StatTile label="Vocabulary" value={`${vocabLearned} / ${vocabulary.length}`} />
+        <StatTile label="Kanji" value={`${kanjiLearned} / ${kanjiItems.length}`} />
         <StatTile
           label="Current weekly test"
           value={latestTest ? `${Math.round(latestTest.score_pct)}%` : "—"}
@@ -152,9 +154,9 @@ export default function DashboardPage() {
               <div key={s.key}>
                 <div className="mb-1 flex items-center justify-between text-sm">
                   <span className="font-medium">{s.label}</span>
-                  <span className="text-muted-foreground">{skills[s.key]}%</span>
+                  <span className="text-muted-foreground">{skills[s.key].done}/{skills[s.key].total}</span>
                 </div>
-                <Progress value={skills[s.key]} barClassName="" size="sm" />
+                <Progress value={skills[s.key].pct} barClassName="" size="sm" />
               </div>
             ))}
           </CardContent>
