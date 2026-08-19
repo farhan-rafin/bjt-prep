@@ -19,6 +19,15 @@ import { cn, formatDuration } from "@/lib/utils";
 import { Play, Pause, RotateCcw, Check, ExternalLink, ChevronRight, PartyPopper, Cloud, CloudCheck } from "lucide-react";
 import { toast } from "sonner";
 
+/** Marker prefix so finished blocks can live in completed_tasks without a schema change. */
+const STEP_DONE_PREFIX = "__step:";
+
+/**
+ * How the block is paced. The programme is 4 days x 3 hours, but those hours get split across
+ * sittings, so an untimed "open" mode is the default and the countdown is opt-in.
+ */
+type PacingMode = "open" | "countdown";
+
 const DURATIONS: DurationOption[] = [2, 3, 4, 5];
 const AUTOSAVE_INTERVAL_MS = 5000;
 
@@ -54,6 +63,7 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
     return (picked.length > 0 ? picked : full.slice(0, 2)).slice(0, 3);
   }, [isDay1, week, day, duration, essential]);
 
+  const [pacing, setPacing] = React.useState<PacingMode>("open");
   const [stepIndex, setStepIndex] = React.useState(0);
   const [completedSteps, setCompletedSteps] = React.useState<Set<number>>(new Set());
   const [checkedTasks, setCheckedTasks] = React.useState<Set<string>>(new Set());
@@ -84,8 +94,15 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
       if (existing.duration_choice) setDuration(existing.duration_choice as DurationOption);
       const savedIndex = Math.min(existing.current_step_index ?? 0, Math.max(0, steps.length - 1));
       setStepIndex(savedIndex);
-      setCompletedSteps(new Set(Array.from({ length: savedIndex }, (_, i) => i)));
-      setCheckedTasks(new Set(existing.completed_tasks ?? []));
+      const savedTasks = existing.completed_tasks ?? [];
+      // Step completion is stored alongside checklist items under a "__step:" prefix, so blocks
+      // finished out of order across separate sittings come back exactly as they were left.
+      const doneKeys = new Set(savedTasks.filter((t) => t.startsWith(STEP_DONE_PREFIX)).map((t) => t.slice(STEP_DONE_PREFIX.length)));
+      const restored = new Set<number>();
+      steps.forEach((st, i) => { if (doneKeys.has(st.key)) restored.add(i); });
+      if (restored.size === 0) Array.from({ length: savedIndex }, (_, i) => restored.add(i));
+      setCompletedSteps(restored);
+      setCheckedTasks(new Set(savedTasks.filter((t) => !t.startsWith(STEP_DONE_PREFIX))));
       setNotes(existing.notes ?? "");
       accumulatedRef.current = existing.actual_minutes ?? 0;
     }
@@ -94,15 +111,16 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
 
   // Keep latest values in refs so the autosave heartbeat and unload handler always read
   // current state without needing to be recreated on every keystroke/toggle.
-  const latestRef = React.useRef({ checkedTasks, notes, stepIndex, duration });
+  const latestRef = React.useRef({ checkedTasks, notes, stepIndex, duration, completedSteps });
   React.useEffect(() => {
-    latestRef.current = { checkedTasks, notes, stepIndex, duration };
-  }, [checkedTasks, notes, stepIndex, duration]);
+    latestRef.current = { checkedTasks, notes, stepIndex, duration, completedSteps };
+  }, [checkedTasks, notes, stepIndex, duration, completedSteps]);
 
   const persist = React.useCallback(
     async (patch: Record<string, unknown>) => {
       setSaveState("saving");
-      const { checkedTasks: ct, notes: n, stepIndex: si, duration: d } = latestRef.current;
+      const { checkedTasks: ct, notes: n, stepIndex: si, duration: d, completedSteps: cs } = latestRef.current;
+      const stepMarkers = Array.from(cs).map((i) => `${STEP_DONE_PREFIX}${steps[i]?.key ?? i}`);
       await upsert(
         {
           week,
@@ -111,7 +129,7 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
           duration_choice: d,
           current_step_index: si,
           planned_minutes: steps.reduce((s, x) => s + x.minutes, 0),
-          completed_tasks: Array.from(ct),
+          completed_tasks: [...Array.from(ct), ...stepMarkers],
           notes: n,
           started_at: existing?.started_at ?? new Date().toISOString(),
           ...patch,
@@ -162,24 +180,35 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
 
   async function markStepDone() {
     timer.pause();
-    const elapsedMin = Math.round(timer.elapsedSec / 60);
-    accumulatedRef.current += elapsedMin;
-    setCompletedSteps((prev) => new Set(prev).add(stepIndex));
+    accumulatedRef.current += Math.round(timer.elapsedSec / 60);
+
+    const nextCompleted = new Set(completedSteps).add(stepIndex);
+    setCompletedSteps(nextCompleted);
     setCheckedTasks((prev) => {
       const next = new Set(prev);
       currentStep.checklist.forEach((c) => next.add(c));
       return next;
     });
 
-    if (stepIndex < steps.length - 1) {
-      const nextIndex = stepIndex + 1;
-      setStepIndex(nextIndex);
+    // Jump to the first block that still isn't done, wherever it sits — blocks can be
+    // tackled in any order across separate sittings.
+    const nextPending = steps.findIndex((_, i) => !nextCompleted.has(i));
+    if (nextPending !== -1) {
+      setStepIndex(nextPending);
       timer.reset();
-      await persist({ actual_minutes: accumulatedRef.current, current_step_index: nextIndex });
+      await persist({ actual_minutes: accumulatedRef.current, current_step_index: nextPending });
     } else {
       await persist({ actual_minutes: accumulatedRef.current });
       setConfirmOpen(true);
     }
+  }
+
+  /** Saves and steps away without finishing — the session stays exactly where it is. */
+  async function pauseForNow() {
+    timer.pause();
+    accumulatedRef.current += Math.round(timer.elapsedSec / 60);
+    await persist({ actual_minutes: accumulatedRef.current });
+    toast.success("Saved. Pick up wherever you left off.");
   }
 
   async function confirmComplete() {
@@ -328,22 +357,77 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
             </div>
           )}
 
-          <div className="mt-5 flex items-center gap-3 rounded-xl border border-border bg-surface-muted p-4">
-            <span className={cn("font-mono text-2xl tabular-nums", timer.remainingSec === 0 && "text-danger animate-pulse")}>{formatClock(timer.remainingSec)}</span>
-            <span className="text-xs text-muted-foreground">remaining of {formatDuration(currentStep.minutes)}</span>
-            <div className="ml-auto flex gap-1.5">
-              {!timer.running ? (
-                <Button size="icon" variant="secondary" onClick={timer.start} aria-label="Start timer">
-                  <Play className="size-4" />
-                </Button>
+          <div className="mt-5 rounded-xl border border-border bg-surface-muted p-4">
+            <div className="mb-3 flex items-center gap-1.5">
+              {(["open", "countdown"] as PacingMode[]).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => { setPacing(m); timer.reset(); }}
+                  className={cn(
+                    "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                    pacing === m ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-surface",
+                  )}
+                >
+                  {m === "open" ? "Self-paced" : "Countdown"}
+                </button>
+              ))}
+              <span className="ml-auto text-[11px] text-muted-foreground">
+                suggested {formatDuration(currentStep.minutes)}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              {pacing === "countdown" ? (
+                <>
+                  <span className={cn("font-mono text-2xl tabular-nums", timer.remainingSec === 0 && "animate-pulse text-danger")}>
+                    {formatClock(timer.remainingSec)}
+                  </span>
+                  <span className="text-xs text-muted-foreground">remaining</span>
+                </>
               ) : (
-                <Button size="icon" variant="secondary" onClick={timer.pause} aria-label="Pause timer">
-                  <Pause className="size-4" />
-                </Button>
+                <>
+                  <span className="font-mono text-2xl tabular-nums">{formatClock(timer.elapsedSec)}</span>
+                  <span className="text-xs text-muted-foreground">elapsed · no time limit</span>
+                </>
               )}
-              <Button size="icon" variant="ghost" onClick={timer.reset} aria-label="Reset timer">
-                <RotateCcw className="size-4" />
-              </Button>
+              <div className="ml-auto flex gap-1.5">
+                {!timer.running ? (
+                  <Button size="icon" variant="secondary" onClick={timer.start} aria-label="Start timer">
+                    <Play className="size-4" />
+                  </Button>
+                ) : (
+                  <Button size="icon" variant="secondary" onClick={timer.pause} aria-label="Pause timer">
+                    <Pause className="size-4" />
+                  </Button>
+                )}
+                <Button size="icon" variant="ghost" onClick={timer.reset} aria-label="Reset timer">
+                  <RotateCcw className="size-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Jump freely between blocks — a 3-hour day is meant to be split across sittings. */}
+          <div className="mt-4">
+            <p className="mb-1.5 text-xs text-muted-foreground">
+              {completedSteps.size} of {steps.length} blocks done · progress saves automatically
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {steps.map((st, i) => (
+                <button
+                  key={st.key}
+                  onClick={() => { timer.pause(); setStepIndex(i); timer.reset(); persist({ current_step_index: i }); }}
+                  title={st.label}
+                  className={cn(
+                    "rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors",
+                    completedSteps.has(i) && "border-success bg-success/10 text-success",
+                    i === stepIndex && !completedSteps.has(i) && "border-primary bg-primary/10 text-primary",
+                    i !== stepIndex && !completedSteps.has(i) && "border-border text-muted-foreground hover:bg-surface-muted",
+                  )}
+                >
+                  {completedSteps.has(i) && "✓ "}{i + 1}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -382,14 +466,20 @@ export function SessionPlayer({ week, day }: { week: number; day: DayNumber }) {
             />
           </details>
 
-          <div className="mt-6 flex justify-end gap-2">
-            <Button variant="outline" onClick={() => timer.finishEarly()}>
-              Finish Early
+          <div className="mt-6 flex flex-wrap justify-end gap-2">
+            <Button variant="outline" onClick={pauseForNow}>
+              Pause for now
             </Button>
-            <Button onClick={markStepDone}>
-              <Check className="size-4" />
-              {stepIndex < steps.length - 1 ? "Mark Complete & Next" : "Finish Session"}
-            </Button>
+            {completedSteps.size === steps.length ? (
+              <Button onClick={() => setConfirmOpen(true)}>
+                <Check className="size-4" /> Finish Session
+              </Button>
+            ) : (
+              <Button onClick={markStepDone}>
+                <Check className="size-4" />
+                {completedSteps.has(stepIndex) ? "Next block" : "Mark block done"}
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
