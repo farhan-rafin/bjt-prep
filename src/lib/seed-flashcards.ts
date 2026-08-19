@@ -58,7 +58,9 @@ export function buildAllFlashcards(currentWeek: number): SeedFlashcard[] {
       source_id: v.id,
       front: v.japanese,
       back: `${v.reading} — ${v.meaning}`,
-      example: v.example ? (v.exampleMeaning ? `${v.example} (${v.exampleMeaning})` : v.example) : null,
+      // Japanese only — the translation and reading are resolved from content at render time
+      // (see lib/card-source.ts), so the stored string never mixes the two languages.
+      example: v.example ?? null,
       due_at: dueForWeek(weekForVocab(v, idx), currentWeek),
     });
   });
@@ -69,7 +71,7 @@ export function buildAllFlashcards(currentWeek: number): SeedFlashcard[] {
       source_id: k.id,
       front: k.kanji,
       back: `${k.reading} — ${k.meaning}`,
-      example: k.compounds.join(" · "),
+      example: k.compounds.map((c) => c.text).join(" · "),
       due_at: dueForWeek(weekForKanji(k), currentWeek),
     });
   });

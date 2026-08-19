@@ -19,7 +19,7 @@ function buildQuiz(): QuizItem[] {
       prompt: `${k.kanji}\nWhat is the correct reading?`,
       options,
       correctIndex: options.indexOf(k.reading),
-      explanation: `${k.kanji} (${k.reading}) — ${k.meaning}. Seen in: ${k.compounds.join(", ")}.`,
+      explanation: `${k.kanji} (${k.reading}) — ${k.meaning}. Seen in: ${k.compounds.map((c) => c.text).join(", ")}.`,
       category: "Kanji",
     };
   });

@@ -13,6 +13,8 @@ import { nextSrsState, type Rating } from "@/lib/srs";
 import { buildAllFlashcards } from "@/lib/seed-flashcards";
 import { findCurrentPosition } from "@/lib/progress";
 import { SpeakButton } from "@/components/speak-button";
+import { lookupCardSource } from "@/lib/card-source";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 import { Star, RotateCcw, RefreshCw, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -163,7 +165,12 @@ export default function FlashcardsPage() {
                 >
                   <span className="absolute right-4 top-4"><Star className={cn("size-4", current.is_starred && "fill-accent text-accent")} /></span>
                   {(() => {
-                    const [reading, rest] = splitBack(current.back);
+                    // Prefer the curriculum item over the stored strings: decks seeded before
+                    // readings existed still get furigana and a properly separated meaning.
+                    const src = lookupCardSource(current.source_type, current.source_id);
+                    const [storedReading, storedRest] = splitBack(current.back);
+                    const reading = src.frontReading ?? storedReading;
+                    const meaning = src.meaning ?? storedRest;
                     return (
                       <>
                         <div className="flex items-center gap-1.5">
@@ -172,9 +179,34 @@ export default function FlashcardsPage() {
                         </div>
                         {reading && showFurigana && <p className="jp text-base text-muted-foreground">{reading}</p>}
                         {flipped && (
-                          <div className="mt-2 flex flex-col gap-1">
-                            <p className="jp text-lg text-primary">{rest}</p>
-                            {current.example && <p className="jp text-sm text-muted-foreground">{current.example}</p>}
+                          <div className="mt-2 flex flex-col gap-2">
+                            <p className="text-lg text-primary">{meaning}</p>
+
+                            {src.compounds && src.compounds.length > 0 && (
+                              <p className="text-sm text-muted-foreground">
+                                {src.compounds.map((c, ci) => (
+                                  <span key={c.text}>
+                                    {ci > 0 && " · "}
+                                    <FuriganaSentence text={c.text} reading={c.reading} />
+                                  </span>
+                                ))}
+                              </p>
+                            )}
+
+                            {src.example ? (
+                              <div className="mt-1">
+                                <p className="jp text-sm">
+                                  <FuriganaSentence text={src.example} reading={src.exampleReading} />
+                                </p>
+                                {src.exampleMeaning && (
+                                  <p className="mt-0.5 text-xs italic text-muted-foreground">{src.exampleMeaning}</p>
+                                )}
+                              </div>
+                            ) : (
+                              current.example && <p className="jp text-sm text-muted-foreground">{current.example}</p>
+                            )}
+
+                            {src.note && <p className="text-xs text-muted-foreground">{src.note}</p>}
                           </div>
                         )}
                       </>
@@ -218,7 +250,18 @@ export default function FlashcardsPage() {
                     <CardContent className="flex items-center justify-between p-3">
                       <div>
                         <p className="jp text-sm font-medium">{c.front}</p>
-                        <p className="jp text-xs text-muted-foreground">{c.back}</p>
+                        {(() => {
+                          const src = lookupCardSource(c.source_type, c.source_id);
+                          const [storedReading, storedRest] = splitBack(c.back);
+                          const reading = src.frontReading ?? storedReading;
+                          const meaning = src.meaning ?? storedRest;
+                          return (
+                            <>
+                              {reading && <p className="jp text-xs text-muted-foreground">{reading}</p>}
+                              <p className="text-xs text-muted-foreground">{meaning}</p>
+                            </>
+                          );
+                        })()}
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         <Badge variant="outline">{c.state}</Badge>

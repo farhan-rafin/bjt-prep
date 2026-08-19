@@ -58,8 +58,12 @@ export interface GrammarPoint {
   meaning: string;
   whenUsed?: string;
   simpleExample?: string;
+  /** Kana reading of `simpleExample`, for aligned furigana. */
+  simpleExampleReading?: string;
   simpleExampleMeaning?: string;
   businessExample: string;
+  /** Kana reading of `businessExample`, for aligned furigana. */
+  businessExampleReading?: string;
   businessExampleMeaning?: string;
   commonMistake?: string;
 }
@@ -82,7 +86,8 @@ export interface KanjiItem {
   kanji: string;
   reading: string;
   meaning: string;
-  compounds: string[];
+  /** Each compound carries its own reading so furigana works in compound lists. */
+  compounds: { text: string; reading: string }[];
   category: string;
   week: number;
 }

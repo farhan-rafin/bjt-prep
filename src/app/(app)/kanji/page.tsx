@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useItemStatus } from "@/lib/hooks/use-item-status";
 import { kanjiItems, kanjiCategories, kanjiTotalTarget, kanjiWeeklyTarget } from "@/content";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 import { Bookmark, Check, Search } from "lucide-react";
@@ -88,7 +89,14 @@ function KanjiInner() {
                         </div>
                         {showFurigana && <p className="jp mt-1 text-sm text-muted-foreground">{k.reading}</p>}
                         <p className="text-sm">{k.meaning}</p>
-                        <p className="jp mt-1 text-xs text-muted-foreground">{k.compounds.join(" · ")}</p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {k.compounds.map((c, ci) => (
+                            <span key={c.text}>
+                              {ci > 0 && " · "}
+                              <FuriganaSentence text={c.text} reading={c.reading} />
+                            </span>
+                          ))}
+                        </p>
                         <Badge variant="outline" className="mt-2">{k.category} · Week {k.week}</Badge>
                       </div>
                       <button onClick={() => toggleBookmark(k.id)} aria-label="Bookmark">
