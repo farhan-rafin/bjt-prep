@@ -2,6 +2,7 @@
 import * as React from "react";
 import { vocabulary, keigoPhrases, keigoVerbPairs, grammarPoints, furiganaExtras } from "@/content";
 import { useAuth } from "@/lib/auth-context";
+import { alignFurigana } from "@/lib/furigana";
 
 /** Word/phrase with its own reading — shown as furigana (ruby) above the text.
  * Respects the learner's "Show furigana" preference (Settings) — off means Test Mode,
@@ -15,6 +16,53 @@ export function Furigana({ text, reading, className }: { text: string; reading?:
       {text}
       <rt className="text-[0.55em] font-normal text-muted-foreground">{reading}</rt>
     </ruby>
+  );
+}
+
+/**
+ * The preferred way to show Japanese in this app.
+ *
+ * Takes a sentence plus its full kana reading and puts furigana over EVERY kanji, using the
+ * reading that kanji actually has in this sentence. Unlike dictionary lookup it covers rare and
+ * inflected words (忙しい, 新しい) and never picks the wrong reading for a compound.
+ *
+ * Falls back to `JapaneseAuto` when no reading is supplied, and to plain text when the supplied
+ * reading doesn't line up with the sentence.
+ */
+export function FuriganaSentence({
+  text,
+  reading,
+  className,
+}: {
+  text: string;
+  reading?: string | null;
+  className?: string;
+}) {
+  const { profile } = useAuth();
+  const show = profile?.show_furigana ?? true;
+  const segments = React.useMemo(() => alignFurigana(text, reading), [text, reading]);
+
+  if (!show) return <span className={className ? className + " jp" : "jp"}>{text}</span>;
+  if (!reading) return <JapaneseAuto text={text} className={className} />;
+
+  // Alignment failed — fall back to dictionary matching rather than showing nothing.
+  if (segments.length === 1 && segments[0].reading === undefined && segments[0].text === text) {
+    return <JapaneseAuto text={text} className={className} />;
+  }
+
+  return (
+    <span className={className ? className + " jp" : "jp"}>
+      {segments.map((seg, i) =>
+        seg.reading ? (
+          <ruby key={i}>
+            {seg.text}
+            <rt className="text-[0.55em] font-normal text-muted-foreground">{seg.reading}</rt>
+          </ruby>
+        ) : (
+          <React.Fragment key={i}>{seg.text}</React.Fragment>
+        ),
+      )}
+    </span>
   );
 }
 

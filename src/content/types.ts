@@ -72,6 +72,8 @@ export interface VocabItem {
   category: string;
   month: number;
   example?: string;
+  /** Full kana reading of `example`, used to align furigana over every kanji in it. */
+  exampleReading?: string;
   exampleMeaning?: string;
 }
 

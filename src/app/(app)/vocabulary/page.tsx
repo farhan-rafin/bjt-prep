@@ -13,7 +13,7 @@ import { vocabulary, vocabCategories, vocabTotalTarget, vocabWeeklyTarget } from
 import { Bookmark, Plus, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { JapaneseAuto, FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { useShowFurigana } from "@/lib/hooks/use-show-furigana";
 
@@ -100,7 +100,7 @@ function VocabularyInner() {
                     <p className="mt-1 text-sm">{v.meaning}</p>
                     {v.example && (
                       <div className="mt-1">
-                        <p className="text-xs text-muted-foreground"><JapaneseAuto text={v.example} /></p>
+                        <p className="text-xs text-muted-foreground"><FuriganaSentence text={v.example} reading={v.exampleReading} /></p>
                         {v.exampleMeaning && <p className="text-xs italic text-muted-foreground/80">{v.exampleMeaning}</p>}
                       </div>
                     )}
