@@ -7,6 +7,7 @@ import { SpeakButton } from "@/components/speak-button";
 import { JapaneseAuto } from "@/components/japanese-text";
 import { combinedItems } from "@/content";
 import { useUserTable } from "@/lib/hooks/use-user-table";
+import { useSpeech } from "@/lib/hooks/use-speech";
 import { cn } from "@/lib/utils";
 import { Check, X, Volume2 } from "lucide-react";
 
@@ -14,6 +15,7 @@ export function CombinedItemRunner() {
   const [selected, setSelected] = React.useState<(typeof combinedItems)[number] | null>(null);
   const [heardAudio, setHeardAudio] = React.useState(false);
   const [answer, setAnswer] = React.useState<number | null>(null);
+  const { speak } = useSpeech();
   const { insert: insertAttempt } = useUserTable("quiz_attempts");
   const { insert: insertMistake } = useUserTable("mistakes");
 
@@ -56,9 +58,13 @@ export function CombinedItemRunner() {
         </p>
         {combinedItems.map((item) => (
           <Card key={item.id} className="cursor-pointer hover:border-primary/40" onClick={() => start(item)}>
-            <CardContent className="flex items-center justify-between p-4">
-              <p className="jp font-medium">{item.title}</p>
-              <Badge variant="accent">PRACTICE</Badge>
+            <CardContent className="flex items-center justify-between gap-3 p-4">
+              <div>
+                <p className="jp font-medium">{item.title}</p>
+                <p className="text-xs text-muted-foreground">{item.titleReading}</p>
+                <p className="text-xs italic text-muted-foreground/80">{item.titleMeaning}</p>
+              </div>
+              <Badge variant="accent" className="shrink-0">PRACTICE</Badge>
             </CardContent>
           </Card>
         ))}
@@ -69,7 +75,11 @@ export function CombinedItemRunner() {
   return (
     <Card>
       <CardContent className="p-6">
-        <p className="jp mb-3 font-medium">{selected.title}</p>
+        <div className="mb-3">
+          <p className="jp font-medium">{selected.title}</p>
+          <p className="text-xs text-muted-foreground">{selected.titleReading}</p>
+          <p className="text-xs italic text-muted-foreground/80">{selected.titleMeaning}</p>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead>
@@ -90,7 +100,7 @@ export function CombinedItemRunner() {
         <div className="mt-4 rounded-xl border border-border bg-surface-muted p-4">
           <p className="mb-2 text-xs font-medium text-muted-foreground">Audio clue</p>
           {!heardAudio ? (
-            <Button size="sm" onClick={() => setHeardAudio(true)}>
+            <Button size="sm" onClick={() => { speak(selected.audioClue, { rate: 0.85 }); setHeardAudio(true); }}>
               <Volume2 className="size-3.5" /> Play audio clue
             </Button>
           ) : (
@@ -107,7 +117,14 @@ export function CombinedItemRunner() {
 
         {heardAudio && (
           <div className="mt-5">
-            <p className="mb-2 text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
+            <p className="text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
+            {answer !== null && (
+              <>
+                <p className="text-xs text-muted-foreground">{selected.questionReading}</p>
+                <p className="text-xs italic text-muted-foreground/80">{selected.questionMeaning}</p>
+              </>
+            )}
+            <div className="mb-2" />
             <div className="flex flex-col gap-2">
               {selected.options.map((opt, i) => {
                 const isCorrect = i === selected.correctIndex;
@@ -118,16 +135,23 @@ export function CombinedItemRunner() {
                     disabled={answer !== null}
                     onClick={() => choose(i)}
                     className={cn(
-                      "flex items-center justify-between rounded-lg border px-4 py-2.5 text-left text-sm transition-colors",
+                      "flex items-start justify-between gap-3 rounded-lg border px-4 py-2.5 text-left text-sm transition-colors",
                       answer === null && "border-border hover:bg-surface-muted",
                       answer !== null && isCorrect && "border-success bg-success/10",
                       answer !== null && isSelected && !isCorrect && "border-danger bg-danger/10",
                       answer !== null && !isSelected && !isCorrect && "border-border opacity-60",
                     )}
                   >
-                    <JapaneseAuto text={opt} />
-                    {answer !== null && isCorrect && <Check className="size-4 text-success" />}
-                    {answer !== null && isSelected && !isCorrect && <X className="size-4 text-danger" />}
+                    <span>
+                      <JapaneseAuto text={opt} />
+                      {answer !== null && (
+                        <span className="mt-0.5 block text-xs italic text-muted-foreground">
+                          {selected.optionMeanings[i]}
+                        </span>
+                      )}
+                    </span>
+                    {answer !== null && isCorrect && <Check className="size-4 shrink-0 text-success" />}
+                    {answer !== null && isSelected && !isCorrect && <X className="size-4 shrink-0 text-danger" />}
                   </button>
                 );
               })}
