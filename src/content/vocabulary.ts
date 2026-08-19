@@ -42,7 +42,7 @@ export const vocabulary: VocabItem[] = [
   { id: "v-shain", japanese: "社員", reading: "しゃいん", meaning: "employee", category: "Office & People", month: 1, example: "新入社員が10名入社しました。", exampleMeaning: "Ten new employees joined the company." },
   { id: "v-joushi", japanese: "上司", reading: "じょうし", meaning: "superior / boss", category: "Office & People", month: 1, example: "上司に確認してからご連絡します。", exampleMeaning: "I'll contact you after checking with my boss." },
   { id: "v-buka", japanese: "部下", reading: "ぶか", meaning: "subordinate", category: "Office & People", month: 1, example: "部下に資料の作成を頼みました。", exampleMeaning: "I asked my subordinate to prepare the materials." },
-  { id: "v-tantou", japanese: "担当", reading: "たんとう", meaning: "person in charge", category: "Office & People", month: 1, example: "この案件は私が担当しております。", exampleMeaning: "I am in charge of this matter." },
+  { id: "v-tantou", japanese: "担当", reading: "たんとう", meaning: "being in charge / assigned duty", category: "Office & People", month: 1, example: "この案件は私が担当しております。", exampleMeaning: "I am in charge of this matter." },
   { id: "v-okyakusama", japanese: "お客様", reading: "おきゃくさま", meaning: "customer (polite)", category: "Customer Service", month: 2, example: "お客様をお待たせしてしまいました。", exampleMeaning: "I kept the customer waiting." },
   { id: "v-torihikisaki", japanese: "取引先", reading: "とりひきさき", meaning: "business partner / client company", category: "Office & People", month: 2, example: "取引先との打ち合わせがあります。", exampleMeaning: "I have a meeting with a business partner." },
   { id: "v-shachou", japanese: "社長", reading: "しゃちょう", meaning: "company president", category: "Office & People", month: 1, example: "社長がご挨拶に伺います。", exampleMeaning: "The president will come to greet you." },
@@ -79,7 +79,7 @@ export const vocabulary: VocabItem[] = [
   { id: "v-tsuuwa", japanese: "通話", reading: "つうわ", meaning: "phone call (in progress)", category: "Telephone", month: 3, example: "ただいま他の通話に出ております。", exampleMeaning: "He/she is currently on another call." },
   { id: "v-rusu", japanese: "留守", reading: "るす", meaning: "absence (from home/desk)", category: "Telephone", month: 3, example: "申し訳ございませんが、ただいま留守にしております。", exampleMeaning: "I'm sorry, but he/she is away from the desk right now." },
   { id: "v-fuzai", japanese: "不在", reading: "ふざい", meaning: "not present / away", category: "Telephone", month: 3, example: "田中はただいま不在にしております。", exampleMeaning: "Tanaka is not present right now." },
-  { id: "v-tantousha", japanese: "担当者", reading: "たんとうしゃ", meaning: "person in charge", category: "Telephone", month: 3, example: "担当者に代わりますので、少々お待ちください。", exampleMeaning: "I'll transfer you to the person in charge; please hold." },
+  { id: "v-tantousha", japanese: "担当者", reading: "たんとうしゃ", meaning: "the person in charge / representative", category: "Telephone", month: 3, example: "担当者に代わりますので、少々お待ちください。", exampleMeaning: "I'll transfer you to the person in charge; please hold." },
   // Week 3 D2 — customer service
   { id: "v-taiou", japanese: "対応", reading: "たいおう", meaning: "response / handling", category: "Customer Service", month: 3, example: "迅速な対応、ありがとうございました。", exampleMeaning: "Thank you for your prompt response." },
   { id: "v-kujou", japanese: "苦情", reading: "くじょう", meaning: "complaint", category: "Customer Service", month: 3, example: "お客様から苦情のお電話がありました。", exampleMeaning: "There was a complaint call from a customer." },

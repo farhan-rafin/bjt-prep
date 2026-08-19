@@ -53,7 +53,7 @@ export const kanjiItems: KanjiItem[] = [
   { id: "k-tai", kanji: "対", reading: "たい", meaning: "face / against", compounds: ["対応", "対策"], category: "Problems", week: 10 },
   { id: "k-ou", kanji: "応", reading: "おう", meaning: "respond", compounds: ["対応"], category: "Problems", week: 10 },
   // Problem/cause — W3D3
-  { id: "k-mon", kanji: "問", reading: "もん", meaning: "question / problem", compounds: ["問題"], category: "Problems", week: 11 },
+  { id: "k-mon", kanji: "問", reading: "もん", meaning: "question / problem; ask / visit", compounds: ["問題", "訪問", "質問"], category: "Problems", week: 11 },
   { id: "k-dai", kanji: "題", reading: "だい", meaning: "topic / subject", compounds: ["問題", "議題"], category: "Problems", week: 11 },
   { id: "k-gen", kanji: "原", reading: "げん", meaning: "origin / field", compounds: ["原因"], category: "Problems", week: 11 },
   { id: "k-in", kanji: "因", reading: "いん", meaning: "cause", compounds: ["原因"], category: "Problems", week: 11 },
@@ -61,10 +61,8 @@ export const kanjiItems: KanjiItem[] = [
   { id: "k-yaku", kanji: "約", reading: "やく", meaning: "promise / approx.", compounds: ["予約", "約束"], category: "Schedules", week: 13 },
   { id: "k-men", kanji: "面", reading: "めん", meaning: "face / surface", compounds: ["面会"], category: "Companies / People", week: 13 },
   { id: "k-hou2", kanji: "訪", reading: "ほう", meaning: "visit", compounds: ["訪問"], category: "Schedules", week: 13 },
-  { id: "k-mon2", kanji: "問", reading: "もん", meaning: "ask / visit", compounds: ["訪問"], category: "Schedules", week: 13 },
   // Decision/opinion — W4D2
   { id: "k-ketsu", kanji: "決", reading: "けつ", meaning: "decide", compounds: ["決定"], category: "Meetings", week: 14 },
-  { id: "k-tei2", kanji: "定", reading: "てい", meaning: "fix / decide", compounds: ["決定", "予定"], category: "Meetings", week: 14 },
   { id: "k-i2", kanji: "意", reading: "い", meaning: "mind / meaning", compounds: ["意見"], category: "Meetings", week: 14 },
   { id: "k-ken", kanji: "見", reading: "けん", meaning: "see / opinion", compounds: ["意見", "見積"], category: "Meetings", week: 14 },
   // Quantities — W4D3
