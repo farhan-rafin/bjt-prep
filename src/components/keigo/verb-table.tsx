@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { SpeakButton } from "@/components/speak-button";
 import { keigoVerbPairs } from "@/content";
+import { FuriganaSentence } from "@/components/japanese-text";
 
 export function KeigoVerbTable() {
   return (
@@ -60,7 +61,7 @@ export function KeigoVerbTable() {
           <Card key={p.id}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between gap-2">
-                <p className="jp text-sm">{p.example}</p>
+                <p className="jp text-sm"><FuriganaSentence text={p.example} reading={p.exampleReading} /></p>
                 <SpeakButton text={p.example} />
               </div>
               <p className="mt-0.5 text-xs text-muted-foreground">{p.exampleReading}</p>

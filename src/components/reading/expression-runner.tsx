@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { expressionItems, expressionGroupInfo, type ExpressionItem } from "@/content";
@@ -105,7 +105,7 @@ export function ExpressionRunner() {
 
           <div className="rounded-lg bg-surface-muted p-4">
             <div className="flex items-start justify-between gap-2">
-              <p className="jp text-base"><JapaneseAuto text={current.passage} /></p>
+              <p className="jp text-base"><FuriganaSentence text={current.passage} reading={revealed ? current.passageReading : undefined} /></p>
               <SpeakButton text={current.passage} />
             </div>
             {revealed && (

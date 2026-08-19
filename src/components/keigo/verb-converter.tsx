@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { SpeakButton } from "@/components/speak-button";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { keigoVerbPairs, keigoRegisterInfo, pairsWith, type KeigoRegister, type KeigoVerbPair } from "@/content";
 import { shuffle, pickDistractors } from "@/lib/quiz-generators";
@@ -142,7 +143,7 @@ export function KeigoVerbConverter() {
 
               <div className="mt-4 rounded-lg bg-surface-muted p-3">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="jp text-sm">{q.pair.example}</p>
+                  <p className="jp text-sm"><FuriganaSentence text={q.pair.example} reading={q.pair.exampleReading} /></p>
                   <SpeakButton text={q.pair.example} />
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground">{q.pair.exampleReading}</p>

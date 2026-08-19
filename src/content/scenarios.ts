@@ -14,7 +14,7 @@ export const scenarios: BusinessScenario[] = [
   {
     id: "telephone-1", category: "Telephone",
     dialogue: [
-      { speaker: "staff", line: "はい、〇〇会社でございます。", reading: "はい、まるまるがいしゃでございます。", meaning: "Hello, this is [Company Name]." },
+      { speaker: "staff", line: "はい、〇〇会社でございます。", reading: "はい、まるまるかいしゃでございます。", meaning: "Hello, this is [Company Name]." },
       { speaker: "staff", line: "恐れ入りますが、どちら様でしょうか。", reading: "おそれいりますが、どちらさまでしょうか。", meaning: "I'm sorry, but may I ask who's calling?" },
       { speaker: "staff", line: "申し訳ございません、田中はただ今席を外しております。", reading: "もうしわけございません、たなかはただいませきをはずしております。", meaning: "I'm sorry, Tanaka is away from his desk right now." },
     ],

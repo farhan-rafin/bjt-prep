@@ -19,13 +19,22 @@ export interface FuriganaSegment {
   reading?: string;
 }
 
-const KANJI = /[一-龯㐀-䶿豈-﫿々〆ヶ]/;
+const KANJI = /[一-龯㐀-䶿豈-﫿々〆ヶ〇]/;
 const DIGIT = /[0-9０-９]/;
 const LATIN = /[A-Za-zＡ-Ｚａ-ｚ]/;
 
+/**
+ * Symbols that are SPOKEN rather than read literally, so they belong to the run they sit in:
+ *   3,000円 → さんぜんえん (comma silent)   20% → にじゅっパーセント
+ *   9:00 → くじ                        4月1日〜5日 → …から…
+ *   ＋8% → プラスはちパーセント         W-215 → ダブリューにひゃくじゅうご
+ * ー (katakana long vowel) is deliberately absent — it is literal, as in コーヒー.
+ */
+const SPOKEN_SYMBOL = /[,.:%％＋+〜～~\-－−]/;
+
 /** Characters that carry a spoken reading distinct from their written form. */
 function needsReading(ch: string): boolean {
-  return KANJI.test(ch) || DIGIT.test(ch) || LATIN.test(ch);
+  return KANJI.test(ch) || DIGIT.test(ch) || LATIN.test(ch) || SPOKEN_SYMBOL.test(ch);
 }
 
 /** Katakana → hiragana, so かな anchors match however the sentence writes them. */
@@ -44,14 +53,35 @@ interface Token {
 }
 
 function tokenise(text: string): Token[] {
-  const tokens: Token[] = [];
+  const raw: Token[] = [];
   let i = 0;
   while (i < text.length) {
     const needs = needsReading(text[i]);
     let j = i;
     while (j < text.length && needsReading(text[j]) === needs) j++;
-    tokens.push({ text: text.slice(i, j), needs });
+    raw.push({ text: text.slice(i, j), needs });
     i = j;
+  }
+
+  // Whitespace carries no sound, so it can't anchor anything. Where it's the only thing between
+  // two kanji runs — common in schedules ("9:00 東京駅") and multi-line notices — merge them into
+  // one run instead of failing on an anchor that normalises to nothing.
+  const tokens: Token[] = [];
+  for (const token of raw) {
+    const prev = tokens[tokens.length - 1];
+    const beforePrev = tokens[tokens.length - 2];
+    const isBlank = !token.needs && normalise(token.text).length === 0;
+
+    if (isBlank && prev?.needs === false) {
+      prev.text += token.text; // blank run merges into the literal before it
+      continue;
+    }
+    if (token.needs && prev && !prev.needs && normalise(prev.text).length === 0 && beforePrev?.needs) {
+      beforePrev.text += prev.text + token.text;
+      tokens.pop();
+      continue;
+    }
+    tokens.push({ ...token });
   }
   return tokens;
 }

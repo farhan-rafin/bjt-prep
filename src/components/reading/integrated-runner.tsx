@@ -3,7 +3,7 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { useSpeech } from "@/lib/hooks/use-speech";
 import { useUserTable } from "@/lib/hooks/use-user-table";
@@ -85,7 +85,7 @@ export function IntegratedRunner() {
 
         <div className="mt-4 rounded-xl border border-border p-4">
           <p className="jp whitespace-pre-line text-sm leading-relaxed">
-            <JapaneseAuto text={selected.document} />
+            <FuriganaSentence text={selected.document} reading={answer !== null ? selected.documentReading : undefined} />
           </p>
           {answer !== null && (
             <>
@@ -119,7 +119,7 @@ export function IntegratedRunner() {
 
         {heardAudio && (
           <div className="mt-5">
-            <p className="jp text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
+            <p className="jp text-sm font-medium"><FuriganaSentence text={selected.question} reading={answer !== null ? selected.questionReading : undefined} /></p>
             {answer !== null && (
               <>
                 <p className="text-xs text-muted-foreground">{selected.questionReading}</p>

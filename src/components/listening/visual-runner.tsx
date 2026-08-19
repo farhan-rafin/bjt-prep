@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SpeakButton } from "@/components/speak-button";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { useSpeech } from "@/lib/hooks/use-speech";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { visualItems, visualKindLabel, type VisualItem } from "@/content";
@@ -85,7 +86,7 @@ export function VisualRunner() {
             </div>
             {current.footnote && (
               <div className="border-t-2 border-dashed border-border px-4 py-2.5">
-                <p className="jp text-xs">{current.footnote}</p>
+                <p className="jp text-xs"><FuriganaSentence text={current.footnote} reading={answer !== null ? current.footnoteReading : undefined} /></p>
                 {answer !== null && (
                   <>
                     <p className="mt-0.5 text-[11px] text-muted-foreground">{current.footnoteReading}</p>
@@ -105,10 +106,9 @@ export function VisualRunner() {
             ) : (
               <div className="flex items-start gap-1.5">
                 <div className="flex-1">
-                  <p className="jp text-sm">{current.audioScript}</p>
+                  <p className="jp text-sm"><FuriganaSentence text={current.audioScript} reading={answer !== null ? current.audioReading : undefined} /></p>
                   {answer !== null && (
                     <>
-                      <p className="mt-1 text-xs text-muted-foreground">{current.audioReading}</p>
                       <p className="mt-0.5 text-xs italic text-muted-foreground/80">{current.audioMeaning}</p>
                     </>
                   )}

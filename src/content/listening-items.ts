@@ -318,7 +318,7 @@ export const listeningItems: ListeningItem[] = [
     context: "Reporting a system problem",
     lines: [
       { speaker: "A", text: "システムにログインできないんですが、どうしたらいいですか。", reading: "システムにログインできないんですが、どうしたらいいですか。", meaning: "I can't log into the system — what should I do?" },
-      { speaker: "B", text: "情報システム部の内線202にご連絡ください。", reading: "じょうほうシステムぶのないせんにひゃくにへごれんらくください。", meaning: "Please contact the IT department at extension 202." },
+      { speaker: "B", text: "情報システム部の内線202にご連絡ください。", reading: "じょうほうシステムぶのないせんにひゃくににごれんらくください。", meaning: "Please contact the IT department at extension 202." },
     ],
     question: "Aさんはどこに連絡しますか。",
     questionReading: "エーさんはどこにれんらくしますか。",

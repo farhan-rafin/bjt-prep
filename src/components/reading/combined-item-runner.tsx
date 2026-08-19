@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SpeakButton } from "@/components/speak-button";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { JapaneseAuto, FuriganaSentence } from "@/components/japanese-text";
 import { combinedItems } from "@/content";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { useSpeech } from "@/lib/hooks/use-speech";
@@ -106,8 +106,7 @@ export function CombinedItemRunner() {
           ) : (
             <div className="flex items-start gap-1.5">
               <div>
-                <p className="jp text-sm">{selected.audioClue}</p>
-                <p className="jp text-xs text-muted-foreground/70">{selected.audioClueReading}</p>
+                <p className="jp text-sm"><FuriganaSentence text={selected.audioClue} reading={selected.audioClueReading} /></p>
                 <p className="text-xs italic text-muted-foreground/80">{selected.audioClueMeaning}</p>
               </div>
               <SpeakButton text={selected.audioClue} rate={0.85} />
@@ -117,7 +116,7 @@ export function CombinedItemRunner() {
 
         {heardAudio && (
           <div className="mt-5">
-            <p className="text-sm font-medium"><JapaneseAuto text={selected.question} /></p>
+            <p className="text-sm font-medium"><FuriganaSentence text={selected.question} reading={answer !== null ? selected.questionReading : undefined} /></p>
             {answer !== null && (
               <>
                 <p className="text-xs text-muted-foreground">{selected.questionReading}</p>

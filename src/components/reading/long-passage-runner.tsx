@@ -3,7 +3,7 @@ import * as React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { longPassages, type LongPassage } from "@/content";
@@ -112,7 +112,7 @@ export function LongPassageRunner() {
 
           <div className="rounded-xl border border-border p-4">
             <p className="jp whitespace-pre-line text-sm leading-relaxed">
-              <JapaneseAuto text={selected.text} />
+              <FuriganaSentence text={selected.text} reading={selected.textReading} />
             </p>
           </div>
 

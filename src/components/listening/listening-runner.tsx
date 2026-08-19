@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { JapaneseAuto } from "@/components/japanese-text";
+import { FuriganaSentence } from "@/components/japanese-text";
 import { useSpeech } from "@/lib/hooks/use-speech";
 import { useUserTable } from "@/lib/hooks/use-user-table";
 import { listeningItems, listeningTypeInfo, type ListeningItem, type ListeningType } from "@/content";
@@ -217,8 +217,7 @@ export function ListeningRunner() {
                         <span className="mt-0.5 shrink-0 text-xs font-medium text-muted-foreground">{l.speaker}</span>
                       )}
                       <div className="flex-1">
-                        <p className="jp text-sm"><JapaneseAuto text={l.text} /></p>
-                        <p className="mt-0.5 text-xs text-muted-foreground">{l.reading}</p>
+                        <p className="jp text-sm"><FuriganaSentence text={l.text} reading={l.reading} /></p>
                         <p className="mt-0.5 text-xs italic text-muted-foreground/80">{l.meaning}</p>
                       </div>
                       <button
