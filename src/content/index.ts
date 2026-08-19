@@ -17,3 +17,4 @@ export * from "./cloze-questions";
 export * from "./listening-items";
 export * from "./expression-items";
 export * from "./keigo-verbs";
+export * from "./integrated-items";

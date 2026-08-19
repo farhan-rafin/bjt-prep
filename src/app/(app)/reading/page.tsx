@@ -11,6 +11,7 @@ import { JapaneseAuto } from "@/components/japanese-text";
 import { SpeakButton } from "@/components/speak-button";
 import { CombinedItemRunner } from "@/components/reading/combined-item-runner";
 import { ExpressionRunner } from "@/components/reading/expression-runner";
+import { IntegratedRunner } from "@/components/reading/integrated-runner";
 import { Eye, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -154,7 +155,8 @@ export default function ReadingPage() {
         <TabsList>
           <TabsTrigger value="timed">Timed Passages</TabsTrigger>
           <TabsTrigger value="expression">Expression Reading</TabsTrigger>
-          <TabsTrigger value="combined">Part II Practice</TabsTrigger>
+          <TabsTrigger value="combined">資料聴読解</TabsTrigger>
+          <TabsTrigger value="integrated">総合聴読解</TabsTrigger>
         </TabsList>
         <TabsContent value="timed">
           <TimedPassages />
@@ -167,6 +169,9 @@ export default function ReadingPage() {
         </TabsContent>
         <TabsContent value="combined">
           <CombinedItemRunner />
+        </TabsContent>
+        <TabsContent value="integrated">
+          <IntegratedRunner />
         </TabsContent>
       </Tabs>
     </div>
